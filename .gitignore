@@ -1,0 +1,7 @@
+# SHAMEL framework repo — projects/ have their own repos
+projects/
+.worktrees/
+*.db
+__pycache__/
+*.pyc
+.env

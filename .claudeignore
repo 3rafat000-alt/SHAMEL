@@ -1,0 +1,6 @@
+# Context shield — ~80% reduction
+archive/
+*.db
+*.tar.gz
+*.log
+__pycache__/

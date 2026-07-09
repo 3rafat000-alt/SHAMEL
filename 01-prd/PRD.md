@@ -413,7 +413,7 @@ effort classes الخمس (trivial-fix · single-role · cross-room · audit-swe
 ### 5.9 الواجهات (CLI · hooks · oracle · أدوات)
 
 **FR-80 — CLI واحد: `shamel`.**
-نقطة دخول تنفيذية واحدة `os/bin/shamel` → `python3 -m shamel_tools`، ترث subcommands v6 الـ 32 (projects·brain·brain-query/recall·route·gate-check·dispatch·squad·handoff·escalate·sync·checkpoint·claim·release·worktree·gate-merge·gate-tag·git-check·domain·tunnel·doctor·rooms·registry·budget·oracle·plan·run·resume·events·lint·…) وتضيف: `agents build` (FR-02) · `automation install/status` (FR-31) · `brain-audit` (FR-12) · `scaffold map` (FR-41) · `new` (FR-40). alias انتقالي `sofi → shamel` مسموح **خارج** الجذر فقط ولمدة محددة.
+نقطة دخول تنفيذية واحدة `engine/bin/shamel` → `python3 -m shamel_tools`، ترث subcommands v6 الـ 32 (projects·brain·brain-query/recall·route·gate-check·dispatch·squad·handoff·escalate·sync·checkpoint·claim·release·worktree·gate-merge·gate-tag·git-check·domain·tunnel·doctor·rooms·registry·budget·oracle·plan·run·resume·events·lint·…) وتضيف: `agents build` (FR-02) · `automation install/status` (FR-31) · `brain-audit` (FR-12) · `scaffold map` (FR-41) · `new` (FR-40). alias انتقالي `sofi → shamel` مسموح **خارج** الجذر فقط ولمدة محددة.
 *الإسناد: GAP-15 (ثنائي sofi) · GAP-06 (8 نقاط دخول → 1) · مصفوفة §3 بند 2.*
 
 **FR-81 — أدوات الغرف: الاكتفاء الذاتي فعلي.**

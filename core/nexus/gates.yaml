@@ -1,0 +1,85 @@
+# SHAMEL Gates — 9 gates (machine-readable)
+# Owner: gtw-gatekeeper. Validated by shamel gate-check.
+
+gates:
+  "0":
+    name: Inception
+    owner: 01-strategy
+    entry: "Idea worth a project"
+    exit_bar: "Project charter exists; <slug>.local registered in STATE"
+    artifacts: ["blueprint.md", "problem-statement.md"]
+    on_fail: "Reject upward — clarify scope"
+
+  "1":
+    name: Discovery
+    owner: 02-research
+    entry: "Gate 0 tagged; problem statement frozen"
+    exit_bar: "Evidence-grounded personas + journey map (Mermaid); cited sources"
+    artifacts: ["personas.md", "journey-map.md"]
+    on_fail: "More research required"
+
+  "2":
+    name: Solution Design
+    owner: 03-design
+    entry: "Journey Map frozen"
+    exit_bar: "WCAG 2.2 AA passes; every screen traces to journey stage; freeze"
+    artifacts: ["prototype-spec.md", "content-strings.json"]
+    on_fail: "Design gaps — revise"
+
+  "3":
+    name: Architecture
+    owner: 04-architecture
+    entry: "Prototype frozen"
+    exit_bar: "Schema↔screens traceable; migrations reversible; threat model signed"
+    artifacts: ["schema.md", "erd.md", "openapi.yaml", "tech-stack.md", "threat-model.md"]
+    on_fail: "Architecture gaps — revise; journey-less features → Backlog"
+
+  "4":
+    name: Build
+    owner: 05-backend
+    entry: "Gate-3 bundle frozen"
+    exit_bar: "All states built; leads merge at close; test green"
+    artifacts: ["code", "test-report.md"]
+    on_fail: "Code gaps — fix before merge"
+
+  "5":
+    name: Quality
+    owner: 10-quality
+    entry: "Build merged to prj/<PRJ>"
+    exit_bar: "ONE PASS/BLOCK; crit/high fixed; coverage >90%; TTI <2s; pass^k on money/auth/PII"
+    artifacts: ["test-report.md", "design-audit.md", "qa-verdict.md"]
+    on_fail: "BLOCK until resolved"
+
+  "6":
+    name: Staging / UAT
+    owner: 11-devops
+    entry: "Quality PASS"
+    exit_bar: "UAT pass; pass^k re-run on critical paths"
+    artifacts: ["staging-report.md", "uat-log.md"]
+    on_fail: "UAT fails — fix and re-deploy"
+
+  "7":
+    name: Production
+    owner: 11-devops
+    entry: "UAT signed"
+    exit_bar: "Blue/Green healthy; rollback rehearsed"
+    artifacts: ["deploy-report.md", "rollback-script.md"]
+    on_fail: "Rollback and fix"
+
+  "8":
+    name: Observe
+    owner: 12-observability
+    entry: "Prod live"
+    exit_bar: "SLO report + journey drop-off insights; breach auto-files Gate-1 issue"
+    artifacts: ["slo-report.md"]
+    on_fail: "SLO breach → re-enter Gate 1"
+
+tracks:
+  fast-track:
+    collapses: [1, 2, 3]
+    eligibility: "UI copy, i18n, non-money fields, low-risk"
+    gate: "Blueprint check → prod on green tests"
+  deep-audit:
+    gates: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    eligibility: "Money, auth, PII, credentials, irreversible operations"
+    note: "No exception; unsure → Deep-Audit"

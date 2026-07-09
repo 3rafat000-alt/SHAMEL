@@ -427,12 +427,12 @@ status: open
 
 ```cron
 # مرآة من cron/shamel.crontab — الملف هو المصدر الوحيد؛ القواعد الملزمة في AUTOMATION.md §2.3
-15 3 * * *  cd $SHAMEL && engine/bin/shamel doctor --json  >> .shamel/logs/doctor.jsonl  2>&1 || engine/bin/shamel notify "doctor FAIL"   # فحص parity/التوائم/عدّاد أعطال hooks — أي ازدواج جديد = FAIL
-0  4 * * 0  cd $SHAMEL && claude -p "/shamel-reflect" --max-turns 15 >> .shamel/logs/reflect.jsonl 2>&1                                   # حلقة الدروس الأسبوعية (تقطير HANDOFFS → LESSONS، idempotent على sig)
-0  5 * * 0  cd $SHAMEL && engine/bin/shamel budget report --json >> .shamel/logs/budget.jsonl 2>&1                                        # تدقيق الهدر الأسبوعي (E8) + عيّنات V5
+15 3 * * *  cd $SHAMEL && engine/bin/shamel doctor --json  >> brain/db/logs/doctor.jsonl  2>&1 || engine/bin/shamel notify "doctor FAIL"   # فحص parity/التوائم/عدّاد أعطال hooks — أي ازدواج جديد = FAIL
+0  4 * * 0  cd $SHAMEL && claude -p "/shamel-reflect" --max-turns 15 >> brain/db/logs/reflect.jsonl 2>&1                                   # حلقة الدروس الأسبوعية (تقطير HANDOFFS → LESSONS، idempotent على sig)
+0  5 * * 0  cd $SHAMEL && engine/bin/shamel budget report --json >> brain/db/logs/budget.jsonl 2>&1                                        # تدقيق الهدر الأسبوعي (E8) + عيّنات V5
 ```
 
-قواعد الملف الملزمة (هناك لا هنا): كل سطر cron **مقيّد** (`--max-turns` للنموذجي، timeout داخلي للحتمي) · السجلات في `.shamel/logs/` (gitignored) · الفشل يستدعي `shamel notify` — لا مهمة مجدولة صامتة الفشل.
+قواعد الملف الملزمة (هناك لا هنا): كل سطر cron **مقيّد** (`--max-turns` للنموذجي، timeout داخلي للحتمي) · السجلات في `brain/db/logs/` (gitignored) · الفشل يستدعي `shamel notify` — لا مهمة مجدولة صامتة الفشل.
 
 - حلقة reflection **مجدولة لا per-turn**: تُضيف دروساً (`situation · what_failed · rule` بسيغنتشر `sig:` مانع للتكرار) إلى `_context/LESSONS.md` ولا تحذف الخام أبداً؛ تقترح ترقية الأنماط ولا تعدّل العقيدة — القرار ADR للـ CEO.
 - الدروس تعود للحقن عند boot (لقاح LESSONS في P1) — درس لا يُقرأ log لا ذاكرة.

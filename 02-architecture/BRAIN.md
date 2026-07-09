@@ -292,8 +292,8 @@ shamel reflect debt PRJ-0001
 
 ```cron
 # SHAMEL reflection — أحد كل أسبوع 22:00 + doctor يومي 08:00
-0 22 * * 0  flock -n /tmp/shamel-reflect.lock  $HOME/Desktop/SHAMEL/os/bin/reflect-cron.sh  >> $HOME/Desktop/SHAMEL/.claude/memory/cron.log 2>&1
-0 8  * * *  $HOME/Desktop/SHAMEL/os/bin/shamel doctor --brain --quiet || notify-send "SHAMEL doctor FAIL"
+0 22 * * 0  flock -n /tmp/shamel-reflect.lock  $HOME/Desktop/SHAMEL/os/bin/reflect-cron.sh  >> $HOME/Desktop/SHAMEL/brain/db/logs/cron.log 2>&1
+0 8  * * *  $HOME/Desktop/SHAMEL/engine/bin/shamel doctor --brain --quiet || notify-send "SHAMEL doctor FAIL"
 ```
 
 `reflect-cron.sh` (حتمي، ~30 سطراً):
@@ -302,13 +302,13 @@ shamel reflect debt PRJ-0001
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$HOME/Desktop/SHAMEL"
-for prj in $(os/bin/shamel projects --active --ids); do
-  debt=$(os/bin/shamel reflect debt "$prj" --number)
+for prj in $(engine/bin/shamel projects --active --ids); do
+  debt=$(engine/bin/shamel reflect debt "$prj" --number)
   [ "$debt" -lt 5 ] && continue                      # عتبة: 5 تذاكر done
   claude -p "/reflect $prj" \
       --permission-mode acceptEdits --max-turns 20 \
-      --allowedTools "Read,Grep,Glob,Edit,Write,Bash(os/bin/shamel *)"
-  os/bin/shamel doctor --lessons "$prj"              # تحقق فوري fail-closed (§5.3)
+      --allowedTools "Read,Grep,Glob,Edit,Write,Bash(engine/bin/shamel *)"
+  engine/bin/shamel doctor --lessons "$prj"              # تحقق فوري fail-closed (§5.3)
 done
 ```
 

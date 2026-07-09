@@ -1,0 +1,85 @@
+# SHAMEL Agent Registry — 15 rooms, 105 agents
+# Source of truth for who exists, their room, route, and tools.
+# Populated fully in Phase 4. Stub structure here for Phase 2.
+
+rooms:
+  "00-boardroom":
+    code: "00"
+    name_ar: غرفة القيادة
+    name_en: Boardroom
+    agents: [lead, ceo, cpo, cto, cqo, cso, chief-of-staff, arbiter]
+  "01-strategy":
+    code: "01"
+    name_ar: إستراتيجية المنتج
+    name_en: Product Strategy
+    agents: [lead, product-strategist, business-analyst, market-analyst, roadmap-planner, risk-analyst, monetization-strategist]
+  "02-research":
+    code: "02"
+    name_ar: أبحاث المستخدم
+    name_en: UX Research
+    agents: [lead, ux-researcher, journey-architect, behavioral-analyst, usability-specialist, survey-specialist, persona-developer]
+  "03-design":
+    code: "03"
+    name_ar: التصميم المرئي
+    name_en: Visual Design
+    agents: [lead, ui-designer, design-system-engineer, visual-designer, iconographer, motion-designer, a11y-specialist]
+  "04-architecture":
+    code: "04"
+    name_ar: المعمارية
+    name_en: Architecture
+    agents: [lead, system-architect, api-architect, data-architect, infra-architect, integration-architect, review-architect]
+  "05-backend":
+    code: "05"
+    name_ar: الهندسة الخلفية
+    name_en: Backend Engineering
+    agents: [lead, backend-engineer, api-engineer, domain-engineer, blade-engineer, queue-engineer, integration-engineer, code-reviewer, refactoring-surgeon]
+  "06-frontend":
+    code: "06"
+    name_ar: الواجهات الأمامية
+    name_en: Frontend Engineering
+    agents: [lead, vue-engineer, react-engineer, css-artisan, interaction-engineer, performance-engineer, a11y-engineer, code-reviewer]
+  "07-mobile":
+    code: "07"
+    name_ar: الهواتف
+    name_en: Mobile Engineering
+    agents: [lead, flutter-engineer, platform-engineer, state-engineer, perf-profiler, release-engineer]
+  "08-data":
+    code: "08"
+    name_ar: البيانات
+    name_en: Data
+    agents: [lead, db-engineer, cache-engineer, etl-engineer, analytics-engineer, ml-engineer, privacy-officer]
+  "09-security":
+    code: "09"
+    name_ar: الأمن
+    name_en: Security
+    agents: [lead, security-analyst, pentester, appsec-engineer, authn-engineer, compliance-auditor, incident-responder, threat-modeler, secrets-warden]
+  "10-quality":
+    code: "10"
+    name_ar: الجودة
+    name_en: Quality
+    agents: [lead, test-architect, automation-engineer, manual-explorer, perf-analyst, design-auditor, regression-warden]
+  "11-devops":
+    code: "11"
+    name_ar: العمليات
+    name_en: DevOps
+    agents: [lead, devops-engineer, cloud-engineer, cicd-engineer, kubernetes-admin, monitoring-engineer, cost-optimizer, release-manager, migration-runner, domain-warden]
+  "12-observability":
+    code: "12"
+    name_ar: المراقبة
+    name_en: Observability
+    agents: [lead, monitoring-engineer, alerting-engineer, sre, incident-commander, insights-analyst]
+  "13-knowledge":
+    code: "13"
+    name_ar: المعرفة
+    name_en: Knowledge
+    agents: [lead, technical-writer, documentation-engineer, knowledge-manager, api-documenter, content-strategist, brain-query, memory-curator, reflector, historian, doc-writer]
+  "14-gateway":
+    code: "14"
+    name_ar: البوابة
+    name_en: Gateway
+    agents: [lead, dispatcher, router, gatekeeper, budget-warden, conflict-resolver, external-reviewer]
+
+services:
+  translator:
+    description: Semantic Gateway — refines raw human input into structured JSON for CEO
+    agent: translator

@@ -36,7 +36,7 @@
 | # | المكوّن | الضرر | الإجراء |
 |---|---------|-------|---------|
 | N1 | `session_start.py` في MAIN | يحقن آلياً في كل جلسة توجيهات الجيل الميت (`engine/tooling/` + «no slash-commands») — دستور معاكس حسب مجلد الإقلاع | يُسقط مع مصالحة GAP-02/08؛ نسخة WT هي الوحيدة الناجية |
-| N2 | `dashboard/server.py` + `index.html` | مراقبة «آلية» تقرأ عالم 30 وكيلاً المنقرض — أتمتة تكذب | أرشفة؛ المراقبة تُبنى من جديد على `.shamel/` + nexus |
+| N2 | `dashboard/server.py` + `index.html` | مراقبة «آلية» تقرأ عالم 30 وكيلاً المنقرض — أتمتة تكذب | أرشفة؛ المراقبة تُبنى من جديد على `brain/db/` + nexus |
 | N3 | fork الـ orchestrator المزدوج | نسختان تتباعدان في نفس اليوم؛ أي «تفعيل» قبل الدمج يرسّخ الانقسام | الدمج شرط مسبق (§3.1) |
 
 **الخلاصة الصادقة:** المؤتمت الحقيقي اليوم = حلقة داخل-الجلسة (hooks) + أدوات حتمية تُستدعى عند الطلب + pipeline خارجي يعمل لكنه معزول عن الحوكمة. **لا أتمتة SOFI/شامل تجري اليوم بلا جلسة مفتوحة أو أمر يدوي** — لا أتمتة SOFI مجدولة (crontab المستخدم يحمل فقط مجدولَي Laravel لمشروعين، أحدهما dangling — §1.2 P1)، والـ CI صفر. شامل يبني على A1–A6 ويغلق P1–P7 بترتيب المراحل في §7.
@@ -66,7 +66,7 @@
 | `PreToolUse` (Bash\|Read\|Edit\|Write) | `pre_tool_use.py` | **مرحّل** | الحارس الحاجب: git خطر · `.env` · صيغة commit | كما هو — الحاجب الوحيد المسموح |
 | `PostToolUse` (Edit\|Write) | `post_tool_use.py` | **مرحّل** | نطاقات تذكير checkpoint + `memdb.capture` + telemetry | كما هو؛ يعتمد على إصلاح `paths.py` (§2.4) ليلتقط للمشروع الصحيح |
 | `Stop` | `stop.py` | **مرحّل** | breadcrumb + `memdb.compress_session` + تذكير gate-proof متدرّج بسقف | كما هو |
-| `PreCompact` | `pre_compact.py` | **جديد** | قبل ضغط السياق: يكتب لقطة توجيه (المشروع النشط، gate، uncommitted count، آخر 3 قرارات) إلى `.shamel/compact-snapshot.json` — فالجلسة بعد الضغط لا تفقد بوصلتها؛ `SessionStart` بعد compaction يعيد حقنها | جديد كلياً (~40 سطراً على نمط `_common.py`) |
+| `PreCompact` | `pre_compact.py` | **جديد** | قبل ضغط السياق: يكتب لقطة توجيه (المشروع النشط، gate، uncommitted count، آخر 3 قرارات) إلى `brain/db/compact-snapshot.json` — فالجلسة بعد الضغط لا تفقد بوصلتها؛ `SessionStart` بعد compaction يعيد حقنها | جديد كلياً (~40 سطراً على نمط `_common.py`) |
 | `SubagentStop` | `subagent_stop.py` | **جديد** | يلتقط خلاصة كل subagent (المهمة، الحكم، وجود evidence block) كصف memdb بنوع `delegation` — الوقود المفقود لحلقتي reflection (P1) وV5 (تدقيق الأحكام) | جديد (~35 سطراً) |
 
 **الإصلاح العرضي (علاج GAP-20 — «رصد بلا حجب»):** تبقى كل الـ hooks fail-open (فشلها لا يعطّل الجلسة)، لكن `_common.py` يلفّ كل hook بعدّاد أعطال:
@@ -102,9 +102,9 @@ def record_hook_failure(hook: str, err: str) -> None:
 
 | المهمة | النوع | الأمر (سطر cron) | التواتر | لماذا هذا النوع |
 |--------|-------|-------------------|---------|------------------|
-| فحص الهيكل | **حتمي** (لا نموذج) | `os/bin/shamel doctor --json` | ليلي 03:15 | parity/paths/hooks-health — عدّ ومقارنة صرف |
-| ضغط memdb | **حتمي** | `os/bin/shamel memdb compact` | ليلي 03:30 | ضغط صفوف observations القديمة — ميكانيكي |
-| تدقيق الميزانية | **حتمي** | `os/bin/shamel budget report --json` | أسبوعي | تجميع أرقام runlog/telemetry |
+| فحص الهيكل | **حتمي** (لا نموذج) | `engine/bin/shamel doctor --json` | ليلي 03:15 | parity/paths/hooks-health — عدّ ومقارنة صرف |
+| ضغط memdb | **حتمي** | `engine/bin/shamel memdb compact` | ليلي 03:30 | ضغط صفوف observations القديمة — ميكانيكي |
+| تدقيق الميزانية | **حتمي** | `engine/bin/shamel budget report --json` | أسبوعي | تجميع أرقام runlog/telemetry |
 | **reflection** (تقطير الدروس) | **نموذجي** | `claude -p "/shamel-reflect" --max-turns 15 --allowedTools …` | أسبوعي (الأحد 04:00) | الحكم «ما الدرس؟» يحتاج نموذجاً؛ يقرأ HANDOFFS + صفوف `delegation`/`[LEARN]` من memdb ويكتب `LESSONS.md` مُسنداً بالتذاكر |
 | مراجعة oracle الدورية | **نموذجي** (اختياري، المرحلة 7) | `claude -p "/shamel-report weekly" ثم shamel oracle review` | أسبوعي | تأليف التقرير حكمٌ؛ الدفع والالتقاط حتميان |
 
@@ -116,14 +116,14 @@ def record_hook_failure(hook: str, err: str) -> None:
 #   crontab -l | sed '/^# >>> SHAMEL/,/^# <<< SHAMEL/d' | cat - cron/shamel.crontab | crontab -
 SHAMEL=/home/es3dlll/Desktop/SHAMEL
 PATH=/home/es3dlll/.local/bin:/usr/bin:/bin
-15 3 * * *  cd $SHAMEL && os/bin/shamel doctor --json  >> .shamel/logs/doctor.jsonl  2>&1 || os/bin/shamel notify "doctor FAIL"
-30 3 * * *  cd $SHAMEL && os/bin/shamel memdb compact  >> .shamel/logs/memdb.jsonl   2>&1
-0  4 * * 0  cd $SHAMEL && claude -p "/shamel-reflect" --max-turns 15 --allowedTools "Read,Grep,Glob,Edit,Write" >> .shamel/logs/reflect.jsonl 2>&1
-0  5 * * 0  cd $SHAMEL && os/bin/shamel budget report --json >> .shamel/logs/budget.jsonl 2>&1
+15 3 * * *  cd $SHAMEL && engine/bin/shamel doctor --json  >> brain/db/logs/doctor.jsonl  2>&1 || engine/bin/shamel notify "doctor FAIL"
+30 3 * * *  cd $SHAMEL && engine/bin/shamel memdb compact  >> brain/db/logs/memdb.jsonl   2>&1
+0  4 * * 0  cd $SHAMEL && claude -p "/shamel-reflect" --max-turns 15 --allowedTools "Read,Grep,Glob,Edit,Write" >> brain/db/logs/reflect.jsonl 2>&1
+0  5 * * 0  cd $SHAMEL && engine/bin/shamel budget report --json >> brain/db/logs/budget.jsonl 2>&1
 # <<< SHAMEL
 ```
 
-قواعد ملزمة: كل سطر cron **مقيّد** (`--max-turns` للنموذجي، timeout داخلي للحتمي) · يكتب سجلّه في `.shamel/logs/` (gitignored) · فشله يستدعي `shamel notify` (سطح إنذار واحد: notify-send محلياً أو webhook لاحقاً) — **لا مهمة مجدولة صامتة الفشل** (عكس P3/P7) · **البيئة معلنة:** سطر `PATH=` في الملف إلزامي — cron يعمل بـ `/usr/bin:/bin` الافتراضي و`claude` يقيم في `~/.local/bin` (فُحص: `which claude`)، فبدونه سطر reflect يفشل command-not-found من أول ليلة · **أذونات headless معلنة:** `claude -p` non-interactive لا يستطيع منح أذونات أدوات تفاعلياً، فكل استدعاء يحمل `--allowedTools` بالقائمة الدنيا لمهمته (أو allowlist مكافئة في `settings.json`، أو `--permission-mode` مسجَّل) — بدونها reflect لا يستطيع كتابة `LESSONS.md` أصلاً؛ القاعدة نفسها تلزم invoker §3.2.
+قواعد ملزمة: كل سطر cron **مقيّد** (`--max-turns` للنموذجي، timeout داخلي للحتمي) · يكتب سجلّه في `brain/db/logs/` (gitignored) · فشله يستدعي `shamel notify` (سطح إنذار واحد: notify-send محلياً أو webhook لاحقاً) — **لا مهمة مجدولة صامتة الفشل** (عكس P3/P7) · **البيئة معلنة:** سطر `PATH=` في الملف إلزامي — cron يعمل بـ `/usr/bin:/bin` الافتراضي و`claude` يقيم في `~/.local/bin` (فُحص: `which claude`)، فبدونه سطر reflect يفشل command-not-found من أول ليلة · **أذونات headless معلنة:** `claude -p` non-interactive لا يستطيع منح أذونات أدوات تفاعلياً، فكل استدعاء يحمل `--allowedTools` بالقائمة الدنيا لمهمته (أو allowlist مكافئة في `settings.json`، أو `--permission-mode` مسجَّل) — بدونها reflect لا يستطيع كتابة `LESSONS.md` أصلاً؛ القاعدة نفسها تلزم invoker §3.2.
 
 ### 2.4 الـ substrate في الحلقة — آلة حالات واحدة تخلف الست
 
@@ -137,16 +137,16 @@ completed / cancelled = نهائيتان
 
 - **`HANDOFFS.md` يبقى** واجهة القراءة البشرية/الوكيلية للتذاكر، لكنه **مرآة تُولَّد** من taskq (`shamel taskq sync-handoffs <PRJ>`) — لا مصدرَي حقيقة.
 - **`state_db.py` يتقاعد**: جدول تاريخ الانتقالات (أفضل ما فيه، نسخة WT) يُدمج في taskq كجدول `history`؛ حالات الـ pipeline (BACKEND_PROCESSING…) تصبح **مهام taskq لكل غرفة** والـ pipeline مجرد view مشتق.
-- **إعادة تسمية** (GAP-15): `registry.py` في substrate → **`schemadb.py`** — كلمة registry تعود حصراً لسجلّ الوكلاء `nexus/registry.yaml`.
+- **إعادة تسمية** (GAP-15): `registry.py` في substrate → **`schemas.py`** — كلمة registry تعود حصراً لسجلّ الوكلاء `nexus/registry.yaml`.
 
 شجرة طبقة الأتمتة في شامل:
 
 ```
 ~/Desktop/SHAMEL/
 ├── nexus/                        # المصدر الوحيد: registry.yaml · routing.yaml · gates.yaml
-├── os/
+├── engine/
 │   ├── bin/shamel                # الموزّع الواحد (يخلف ثنائي sofi — bash رقيق → python)
-│   ├── substrate/                # الست: taskq · gateway · validate · check · gitflow · schemadb
+│   ├── substrate/                # الست: taskq · gateway · validate · check · gitflow · schemas
 │   │   ├── schemas/              # عقود JSON للـ gateway payloads وevidence blocks
 │   │   └── selftest.sh           # PASS 6/6 أو لا شيء
 │   └── lib/shamel_tools/         # brain · memdb · tickets(mirror) · routing · gates · doctor …
@@ -156,7 +156,7 @@ completed / cancelled = نهائيتان
 │   ├── hooks/                    # 7 سكربتات + _common.py
 │   └── skills/                   # spine skills (/shamel-boot · /shamel-gate · /shamel-reflect …)
 ├── cron/shamel.crontab           # المجدوِل الخارجي الوحيد (§2.3)
-├── .shamel/                      # حالة runtime (gitignored): tasks.db · brain.db · logs/ · hooks-health.jsonl
+├── brain/db/                      # حالة runtime (gitignored): tasks.db · brain.db · logs/ · hooks-health.jsonl
 └── projects/                     # كل مشروع repo git خاص به — قانون يوم-صفر
 ```
 
@@ -258,7 +258,7 @@ budgets:  { max_tasks: 12, max_model_calls: 40, max_minutes: 90, max_attempts_pe
 | validators | توجيهات `MOCK_*` (نجاح فوري/فشل مقصود) | `check.py` على المشروع الفعلي |
 | التكلفة | **صفر API** | مقيّد بـ budgets |
 | الاستخدام | CI للأوركسترا نفسها (كل تعديل على orchestrator يمر بـ MOCK run كامل حتى COMPLETED قبل الدمج) · تدريب/عرض · اختبار self-heal | الإنتاج الفعلي للمهام |
-| القاعدة | **MOCK هو الوضع الافتراضي**؛ `--live` قرار صريح ومسجَّل في run log | كل run يكتب `{run_id, budget_spent, tasks, verdicts}` إلى `.shamel/logs/orchestrator.jsonl` |
+| القاعدة | **MOCK هو الوضع الافتراضي**؛ `--live` قرار صريح ومسجَّل في run log | كل run يكتب `{run_id, budget_spent, tasks, verdicts}` إلى `brain/db/logs/orchestrator.jsonl` |
 
 ---
 
@@ -345,7 +345,7 @@ LESSONS 🤖 · budget warden يعدّ الاستدعاءات 🤖 · oracle ي�
 
 | القاطع | العتبة | الفعل الآلي |
 |--------|--------|-------------|
-| مهمة فاشلة | 3 محاولات (`attempts == 3` في taskq) | crash-dump JSON (`.shamel/crash/<task_id>.json`: المهمة، المحاولات، الأخطاء الثلاثة، آخر diff) + تذكرة تصعيد إلى سلسلة gtw→brd + **gateway يرفض إعادة enqueue لنفس البصمة** حتى يُحل التصعيد — آلة الحالات المُثبتة لا تُمس؛ القاطع طبقة فوقها |
+| مهمة فاشلة | 3 محاولات (`attempts == 3` في taskq) | crash-dump JSON (`brain/db/crash/<task_id>.json`: المهمة، المحاولات، الأخطاء الثلاثة، آخر diff) + تذكرة تصعيد إلى سلسلة gtw→brd + **gateway يرفض إعادة enqueue لنفس البصمة** حتى يُحل التصعيد — آلة الحالات المُثبتة لا تُمس؛ القاطع طبقة فوقها |
 | run خارجي | تجاوز أي حد في `budgets` (§3.3) | إيقاف نظيف: المهام الجارية تُكمل، لا مهمة جديدة، الحالة NEEDS_HUMAN في run log + notify |
 | hooks | فشل ≥3 خلال 24h لنفس الـ hook | WARN في doctor + حقن SessionStart (رصد بلا حجب — GAP-20) |
 | oracle | فشل النقل على السلّم الثلاثي | exit ≠ 0 + التذكرة تتقدم بلا استشارة (الـ oracle استشاري — غيابه لا يجمّد الخط) |
@@ -380,7 +380,7 @@ LESSONS 🤖 · budget warden يعدّ الاستدعاءات 🤖 · oracle ي�
 | # | المرحلة | التسليم | برهان الخروج (exit bar) | kill-switch |
 |---|---------|---------|--------------------------|-------------|
 | 0 | **إنقاذ + مصالحة** (شرط مسبق، خارج هذه الوثيقة) | GAP-01/02/03: git init للمشاريع، توحيد السلالات، انتشال ceo_agent/الأدوات | كل أصل حي في git بسلالة واحدة | — |
-| 1 | **النواة داخل-الجلسة** | ترحيل hooks الخمسة + substrate الست + doctor إلى شجرة شامل؛ إعادة تسمية schemadb | `selftest` PASS 6/6 + `doctor` PASS + جلسة تجريبية تُظهر الحقن والحجب | حذف مدخلات hooks |
+| 1 | **النواة داخل-الجلسة** | ترحيل hooks الخمسة + substrate الست + doctor إلى شجرة شامل؛ إعادة تسمية schemas | `selftest` PASS 6/6 + `doctor` PASS + جلسة تجريبية تُظهر الحقن والحجب | حذف مدخلات hooks |
 | 2 | **إصلاح حلقة الدماغ** | `paths.py` fail-loud + `checkpoint` يعمل من أي شجرة + hooks تُغذّي memdb فعلاً + hooks-health ledger + الـ hookان الجديدان | `checkpoint` يكتب `head_sha` حقيقياً في STATE لمشروع حي؛ memdb > 50 صفاً بعد أسبوع عمل | كما في 1 |
 | 3 | **cron الحتمي** | doctor ليلي + memdb compact + budget أسبوعي + `shamel notify` | 7 ليالٍ متتالية بسجلات ناجحة + إنذار مُختبَر بفشل مصطنع | حذف أسطر cron |
 | 4 | **cron النموذجي (reflection)** | `/shamel-reflect` أسبوعي عبر `claude -p` | أول `LESSONS.md` حقيقي مُسند بالتذاكر + درس منه يظهر لقاحاً في جلسة تالية (الحلقة مغلقة) | حذف سطر cron |
