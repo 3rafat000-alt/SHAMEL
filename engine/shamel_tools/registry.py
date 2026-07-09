@@ -26,12 +26,12 @@ def registry_path() -> Path:
 
 
 # ── loading ───────────────────────────────────────────────────────────────────
-@lru_cache(maxsize=1)
+@lru_cache(maxsize=16)
 def _load() -> dict:
     """Return {"rooms": {code: room}, "agents": {id: agent}} — or empty maps.
 
-    room  = {code, dir, name, emoji, gates, lead, agents: [id, ...]}
-    agent = {id, room, title, spec, spawnable, model, route, budget, tools}
+    room  = {code, dir, name, name_ar, prefix, agents: [id, ...], lead}
+    agent = {id, room_code, title, route, effort, tools, web}
     """
     empty = {"rooms": {}, "agents": {}}
     p = registry_path()
@@ -49,17 +49,54 @@ def _load() -> dict:
         data = None
     if isinstance(data, dict):
         rooms_raw = data.get("rooms")
+        if isinstance(rooms_raw, dict):
+            return _from_shamel_yaml(data)
         if isinstance(rooms_raw, list):
             return _from_yaml(data)
-        if isinstance(rooms_raw, dict):
-            # Convert dict-keyed registry (SHAMEL format) to list-based
-            rooms_list = []
-            for code, room in rooms_raw.items():
-                room["code"] = code
-                rooms_list.append(room)
-            data["rooms"] = rooms_list
-            return _from_yaml(data)
     return _from_lines(text)
+
+
+def _from_shamel_yaml(data: dict) -> dict:
+    """Handle dict-keyed SHAMEL registry format with prefix:."""
+    rooms: dict[str, dict] = {}
+    agents: dict[str, dict] = {}
+    for code, room in (data.get("rooms") or {}).items():
+        code = str(code).strip()
+        if not code:
+            continue
+        prefix = str(room.get("prefix", "")).strip()
+        # Determine room lead: the agent whose short name is 'lead'
+        lead = f"{prefix}-lead" if prefix and 'lead' in (room.get("agents") or []) else ""
+        ids: list[str] = []
+        for a in room.get("agents") or []:
+            if isinstance(a, str):
+                aid = f"{prefix}-{a.strip()}" if prefix else a.strip()
+            else:
+                aid = str(a.get("id", "")).strip()
+            if not aid:
+                continue
+            ids.append(aid)
+            if isinstance(a, str):
+                agents[aid] = {"id": aid, "room_code": code, "room": code}
+            else:
+                agents[aid] = {
+                    "id": aid, "room_code": code, "room": code,
+                    "title": str(a.get("title", "")),
+                    "route": str(a.get("route", "")),
+                    "effort": str(a.get("effort", "")),
+                    "tools": a.get("tools", []),
+                }
+        rooms[code] = {
+            "code": code,
+            "dir": code,
+            "name": str(room.get("name_en", room.get("name", ""))),
+            "name_ar": str(room.get("name_ar", "")),
+            "prefix": prefix,
+            "gates": str(room.get("gates", "")),
+            "lead": lead,
+            "agents": ids,
+        }
+    return {"rooms": rooms, "agents": agents}
 
 
 def _from_yaml(data: dict) -> dict:

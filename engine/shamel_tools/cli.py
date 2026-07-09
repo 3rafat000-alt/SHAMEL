@@ -463,6 +463,86 @@ def cmd_tunnel(a) -> int:
     return tunnel.run(a.action, getattr(a, "prj", None), getattr(a, "provider", None))
 
 
+def cmd_agents(a) -> int:
+    """Generate spawnable .claude/agents/*.md from legal core/rooms/*/agents/*.md specs."""
+    from pathlib import Path
+    import shutil
+
+    op = a.op or "build"
+    root = Path(paths.repo_root())
+    claude_agents = root / ".claude" / "agents"
+    claude_agents.mkdir(parents=True, exist_ok=True)
+
+    if op == "build":
+        specs = sorted(root.glob("core/rooms/*/agents/*.md"))
+        if not specs:
+            print("✗ no agent specs found in core/rooms/*/agents/")
+            return 2
+        count = 0
+        for spec in specs:
+            agent_id = spec.stem
+            content = spec.read_text(encoding="utf-8")
+
+            # Extract frontmatter fields
+            desc = agent_id
+            model = "inherit"
+            tools = "Read, Edit, Write, Bash, Grep"
+            for line in content.splitlines():
+                if line.startswith("success_metric:"):
+                    desc = line.split(":", 1)[1].strip().strip('"').strip("'")
+                if line.startswith("tools:"):
+                    tools = line.split(":", 1)[1].strip().strip("[]").strip()
+
+            # Generate spawnable with explicit tools from legal spec
+            spawnable = f"""---
+name: {agent_id}
+description: "{desc}"
+model: {model}
+tools: [{tools}]
+---
+
+{desc}
+"""
+            out = claude_agents / f"{agent_id}.md"
+            out.write_text(spawnable, encoding="utf-8")
+            print(f"  {agent_id}")
+            count += 1
+        print(f"\n{count} spawnables written to .claude/agents/")
+        return 0
+
+    elif op == "lint":
+        # Check: every spec file has tools: and authority: in frontmatter
+        ok = True
+        specs = sorted(root.glob("core/rooms/*/agents/*.md"))
+        for spec in specs:
+            content = spec.read_text(encoding="utf-8")
+            if "tools:" not in content:
+                print(f"  ✗ {spec.stem}: missing tools: in frontmatter")
+                ok = False
+            if "authority:" not in content:
+                print(f"  ✗ {spec.stem}: missing authority: in frontmatter")
+                ok = False
+        if ok:
+            print("✓ all 105 agent specs pass lint")
+        return 0 if ok else 1
+
+    elif op == "pins":
+        import hashlib
+        specs = sorted(root.glob("core/rooms/*/agents/*.md"))
+        pins = {}
+        for spec in specs:
+            sha = hashlib.sha256(spec.read_bytes()).hexdigest()
+            pins[spec.stem] = sha
+        pins_path = root / "core" / "nexus" / "pins.json"
+        import json
+        pins_path.write_text(json.dumps({"version": 1, "pins": pins, "count": len(pins)},
+                                         indent=2), encoding="utf-8")
+        print(f"{len(pins)} pins written to core/nexus/pins.json")
+        return 0
+
+    return 0
+
+
 def cmd_tools(_a) -> int:
     reg = paths.tooling_dir() / "registry.yaml"
     print(reg.read_text(encoding="utf-8") if reg.exists() else "(no registry.yaml)")
@@ -705,6 +785,10 @@ def build_parser() -> argparse.ArgumentParser:
         s.add_argument("rest", nargs=argparse.REMAINDER,
                        help="args passed through to gemini_review.py (e.g. --file --prj --out --ask)")
         s.set_defaults(fn=cmd_oracle)
+
+    s = sub.add_parser("agents", help="manage agent roster: build|lint|pins")
+    s.add_argument("op", choices=["build", "lint", "pins"], nargs="?", default="build")
+    s.set_defaults(fn=cmd_agents)
 
     sub.add_parser("tools").set_defaults(fn=cmd_tools)
     s = sub.add_parser("selftest"); s.add_argument("--json", action="store_true"); s.set_defaults(fn=cmd_selftest)

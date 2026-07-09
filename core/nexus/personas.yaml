@@ -1,0 +1,320 @@
+# Persona registry — agent-id ↔ Arabic-Syrian name mapping
+# Canonical source for all persona names (Teaching IV)
+
+version: 1
+personas:
+  arc-api-architect:
+    ar: غسان الشعار
+    role: مهندس معمارية API
+  arc-data-architect:
+    ar: جورج قسيس
+    role: مهندس معمارية بيانات
+  arc-infra-architect:
+    ar: رالف عبود
+    role: مهندس معمارية بنية تحتية
+  arc-integration-architect:
+    ar: نيرمين صباغ
+    role: مهندسة معمارية تكامل
+  arc-lead:
+    ar: فيكتور رام
+    role: رئيس غرفة المعمارية
+  arc-review-architect:
+    ar: هشام شرف
+    role: مهندس مراجعة معمارية
+  arc-system-architect:
+    ar: بسام طعمة
+    role: مهندس معمارية أنظمة
+  bck-api-engineer:
+    ar: سامر إبراهيم
+    role: مهندس API
+  bck-blade-engineer:
+    ar: جلال ديب
+    role: مهندس Blade
+  bck-code-reviewer:
+    ar: أحمد شحرور
+    role: مدقق كود
+  bck-domain-engineer:
+    ar: خالد عثمان
+    role: مهندس نطاق الأعمال
+  bck-integration-engineer:
+    ar: كرم المصري
+    role: مهندس تكامل
+  bck-lead:
+    ar: يوسف حداد
+    role: رئيس الهندسة الخلفية
+  bck-queue-engineer:
+    ar: بسام الرفاعي
+    role: مهندس قوائم انتظار
+  bck-refactoring-surgeon:
+    ar: مهند مارديني
+    role: جراح إعادة هيكلة
+  brd-arbiter:
+    ar: عمّار خضّور
+    role: الحكم — فض نزاعات التصميم والتطوير
+  brd-ceo:
+    ar: ماغنوس هولت
+    role: الرئيس التنفيذي — التنسيق الأعلى
+  brd-chief-of-staff:
+    ar: بريسيلا ناير
+    role: رئيس الأركان — تحويل النية إلى أوامر عمل
+  brd-cpo:
+    ar: طارق الجندي
+    role: مسؤول المنتج — البوابات 0–2
+  brd-cqo:
+    ar: باربرا جنسن
+    role: مسؤولة الجودة — البوابة 5
+  brd-cso:
+    ar: مروان الخالد
+    role: مسؤول الأمن — الفيتو المؤسسي
+  brd-cto:
+    ar: فيكتور رام
+    role: مسؤول التقنية — البوابات 3–4
+  dat-analytics-engineer:
+    ar: شادي سعيد
+    role: مهندس تحليلات
+  dat-cache-engineer:
+    ar: مجد عبود
+    role: مهندس تخزين مؤقت
+  dat-db-engineer:
+    ar: رنا خالد
+    role: مهندسة قواعد بيانات
+  dat-etl-engineer:
+    ar: طه يعقوب
+    role: مهندس ETL
+  dat-lead:
+    ar: نادين سلامة
+    role: رئيسة تحليل البيانات
+  dat-ml-engineer:
+    ar: لينا خوري
+    role: مهندسة تعلم آلة
+  dat-privacy-officer:
+    ar: نزار حلاق
+    role: مسؤول خصوصية
+  dsn-a11y-specialist:
+    ar: أيمن الحجار
+    role: أخصائي إتاحة
+  dsn-brand-designer:
+    ar: رامي جبور
+    role: مصمم هوية العلامة
+  dsn-content-strategist:
+    ar: سحر الجندي
+    role: استراتيجية محتوى
+  dsn-design-system:
+    ar: يزن حجازي
+    role: مهندس نظام التصميم
+  dsn-lead:
+    ar: ريم الشيخ
+    role: رئيسة قسم التصميم المرئي
+  dsn-motion-designer:
+    ar: نورا شلهوب
+    role: مصممة حركة
+  dsn-ui-designer:
+    ar: ميار فخري
+    role: مصممة واجهات المستخدم
+  dsn-ux-architect:
+    ar: وليد صباغ
+    role: مهندس تجربة المستخدم
+  fnt-a11y-engineer:
+    ar: داليا المصري
+    role: مهندسة إتاحة
+  fnt-code-reviewer:
+    ar: غيث عقاد
+    role: مدقق كود واجهات
+  fnt-css-artisan:
+    ar: نورا خليل
+    role: حرفية CSS
+  fnt-interaction-engineer:
+    ar: حاتم أتاسي
+    role: مهندس تفاعلات
+  fnt-lead:
+    ar: حسن فخري
+    role: رئيس غرفة الواجهات الأمامية
+  fnt-performance-engineer:
+    ar: أمجد كيالي
+    role: مهندس أداء
+  fnt-react-engineer:
+    ar: آية جابر
+    role: مهندسة React
+  fnt-vue-engineer:
+    ar: مصطفى ديب
+    role: مهندس Vue
+  gtw-budget-warden:
+    ar: مالك طه
+    role: حارس الميزانية
+  gtw-conflict-resolver:
+    ar: حسام قبلاوي
+    role: حل النزاعات بين الغرف
+  gtw-dispatcher:
+    ar: وسيم العلي
+    role: الموزّع
+  gtw-external-reviewer:
+    ar: نادين عيسى
+    role: مراجعة خارجية — مكتب جيميني
+  gtw-gatekeeper:
+    ar: جودي مراد
+    role: حارس البوابة — فحص عدائي
+  gtw-router:
+    ar: عماد جابر
+    role: جدول التوجيه
+  knw-brain-query:
+    ar: خالد عبود
+    role: مستعلم العقل
+  knw-doc-writer:
+    ar: رنا قدسي
+    role: كاتبة وثائق
+  knw-historian:
+    ar: ناديا عيسى
+    role: مؤرّخة القرارات
+  knw-lead:
+    ar: رانيا الحسين
+    role: رئيسة إدارة المعرفة
+  knw-memory-curator:
+    ar: فراس سلوم
+    role: أمين الذاكرة
+  knw-reflector:
+    ar: سلوى داؤد
+    role: عاكسة الدروس
+  mob-flutter-engineer:
+    ar: ماهر شعبان
+    role: مهندس Flutter
+  mob-lead:
+    ar: حمزة شرف
+    role: رئيس غرفة الهواتف
+  mob-perf-profiler:
+    ar: زياد طويل
+    role: محسن أداء
+  mob-platform-engineer:
+    ar: جهاد حلاق
+    role: مهندس منصات
+  mob-release-engineer:
+    ar: لينا جبري
+    role: مهندسة إصدارات
+  mob-state-engineer:
+    ar: راما حجازي
+    role: مهندسة حالة
+  obs-alerting-engineer:
+    ar: نادر شحرور
+    role: مهندس تنبيهات
+  obs-incident-commander:
+    ar: يمان نجار
+    role: قائد حوادث
+  obs-insights-analyst:
+    ar: ديمة عبود
+    role: محللة رؤى
+  obs-lead:
+    ar: ناعومي بروكس
+    role: رئيسة غرفة المراقبة
+  obs-monitoring-engineer:
+    ar: رنا قبلاوي
+    role: مهندسة مراقبة
+  obs-sre:
+    ar: مجد المصري
+    role: مهندس موثوقية
+  ops-cicd-engineer:
+    ar: رامي قدسي
+    role: مهندس CI/CD
+  ops-cloud-engineer:
+    ar: فادي هاشم
+    role: مهندس سحابي
+  ops-cost-optimizer:
+    ar: أيمن جبري
+    role: محسن تكاليف
+  ops-domain-warden:
+    ar: زياد بطرس
+    role: حارس النطاقات
+  ops-lead:
+    ar: كريم المصري
+    role: رئيس البنية التحتية
+  ops-migration-runner:
+    ar: عبيدة الجابي
+    role: منفذ الترحيل
+  ops-release-manager:
+    ar: هاني فارس
+    role: مدير الإصدارات
+  qa-automation-engineer:
+    ar: أيمن صقر
+    role: مهندس أتمتة اختبارات
+  qa-design-auditor:
+    ar: ندى بدر
+    role: مدققة تصميم
+  qa-lead:
+    ar: باربرا جنسن
+    role: رئيسة غرفة الجودة
+  qa-manual-explorer:
+    ar: جميله خلف
+    role: مختبرة استكشافية
+  qa-perf-analyst:
+    ar: قتيبة الحسين
+    role: محلل أداء
+  qa-regression-warden:
+    ar: سلوى حداد
+    role: حارسة الانحدار
+  qa-test-architect:
+    ar: رندة شمعة
+    role: مهندسة اختبارات
+  res-competitor-analyst:
+    ar: ميسون داوود
+    role: محللة تنافسية
+  res-data-researcher:
+    ar: حسام نديم
+    role: باحث بيانات كمّي
+  res-fact-checker:
+    ar: جميل صالح
+    role: مدقق حقائق
+  res-journey-architect:
+    ar: نزار العقاد
+    role: مهندس رحلة العميل
+  res-lead:
+    ar: سارة الحلبي
+    role: رئيسة قطاع أبحاث تجربة المستخدم
+  res-ux-researcher:
+    ar: ديمة شريف
+    role: باحثة تجربة مستخدم
+  res-web-scout:
+    ar: زياد العلي
+    role: مستكشف ويب
+  sec-appsec-engineer:
+    ar: وائل حجار
+    role: مهندس أمن تطبيقات
+  sec-authn-engineer:
+    ar: ربيع الجزار
+    role: مهندس مصادقة
+  sec-compliance-auditor:
+    ar: سوسن عبود
+    role: مدققة امتثال
+  sec-incident-responder:
+    ar: بلال رشيد
+    role: مستجيب حوادث
+  sec-lead:
+    ar: مروان الخالد
+    role: رئيس أمن المعلومات
+  sec-pentester:
+    ar: أسامة السيد
+    role: مخترق أخلاقي
+  sec-secrets-warden:
+    ar: جمال عكاش
+    role: حارس الأسرار
+  sec-threat-modeler:
+    ar: محمد سليم
+    role: مصمم نماذج تهديد
+  str-business-analyst:
+    ar: كنان عبد الرحمن
+    role: محلل أعمال ومتطلبات
+  str-lead:
+    ar: طارق الجندي
+    role: رئيس قطاع المنتج والمدير الإبداعي التنفيذي
+  str-market-analyst:
+    ar: نور شحادة
+    role: محللة سوق وتموضع تنافسي
+  str-monetization-strategist:
+    ar: لينا الأتاسي
+    role: خبيرة تسعير وعائدات
+  str-product-strategist:
+    ar: محمد الصباغ
+    role: مهندس رؤية المنتج
+  str-risk-analyst:
+    ar: فارس الحمصي
+    role: محلل مخاطر أعمال
+  str-roadmap-planner:
+    ar: سامر ديب
+    role: مخطط خارطة طريق المنتج
