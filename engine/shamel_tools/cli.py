@@ -800,6 +800,124 @@ def cmd_oracle(a) -> int:
     return subprocess.call([sys.executable, str(script), a.op, *a.rest])
 
 
+def cmd_new(a) -> int:
+    """Scaffold new project: git init + remote + commit#1 + _context/ + domain register."""
+    import subprocess, shutil
+    prj_dir = paths.project_dir(a.prj)
+    if prj_dir.exists():
+        print(f"✗ project {a.prj} already exists at {prj_dir}", file=sys.stderr); return 2
+    prj_dir.mkdir(parents=True)
+    try:
+        # git init
+        subprocess.run(["git", "init", "-b", "main"], cwd=str(prj_dir), check=True,
+                       capture_output=True, timeout=15)
+        # _context from templates
+        ctx = prj_dir / "_context"
+        ctx.mkdir()
+        tmpl = paths.repo_root() / "brain" / "templates"
+        if tmpl.exists():
+            for t in tmpl.glob("*.md"):
+                shutil.copy2(str(t), str(ctx / t.name))
+        # STATE.md with project identity
+        state = ctx / "STATE.md"
+        state.write_text(
+            f"# {a.prj}\n---\ntitle: {a.title}\n"
+            f"branch: main\nhead_sha: none\ngate: 0\n"
+            f"priority: {a.priority}\nstatus: inception\n"
+            f"active: str-lead\n---\n")
+        # CONTEXT.md stub
+        (ctx / "CONTEXT.md").write_text(f"# {a.prj} Context\n\nInitial scaffolding.\n")
+        # HANDOFFS.md
+        (ctx / "HANDOFFS.md").write_text(f"# Handoffs\n\n## Gate-0 / Ticket-001\n\nInit {a.title}\n")
+        # first commit
+        subprocess.run(["git", "add", "-A"], cwd=str(prj_dir), check=True, capture_output=True, timeout=15)
+        subprocess.run(["git", "commit", "-m", f"feat({a.prj}): init {a.title}\n\nSHAMEL: {a.prj} · gate 0 · str-lead"],
+                       cwd=str(prj_dir), check=True, capture_output=True, timeout=15)
+        print(f"✓ {a.prj} scaffolded at {prj_dir}")
+        # domain register
+        try:
+            subprocess.run(["engine/bin/shamel", "domain", "register", a.prj], timeout=10)
+        except Exception:
+            print("  ~ domain register skipped (not available)")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"✗ scaffold failed: {e.stderr.decode() if e.stderr else e}", file=sys.stderr)
+        shutil.rmtree(str(prj_dir), ignore_errors=True)
+        return 2
+
+
+def cmd_gate_advance(a) -> int:
+    """Advance gate: validate then tag. V2: adversarial check follows in CI."""
+    _need_project(a.prj)
+    # Validate current gate can advance to to_gate
+    cur = gates.validate_no_skip(a.prj)
+    current_gate = max(list(cur.keys())) if cur else 0
+    if a.to_gate <= current_gate:
+        print(f"✗ already at gate {current_gate} (requested {a.to_gate})", file=sys.stderr)
+        return 2
+    # Run gate check
+    print(f"  gate-check gate-{current_gate} → gate-{a.to_gate} ...")
+    check_passed = True
+    for fn_name, fn in [("no_skip", gates.validate_no_skip),
+                        ("artifacts", gates.validate_artifacts),
+                        ("room_boundary", gates.validate_room_boundary)]:
+        try:
+            result = fn(a.prj)
+            if isinstance(result, dict) and "errors" in result and result["errors"]:
+                print(f"  ✗ {fn_name}: {result['errors']}"); check_passed = False
+            else:
+                print(f"  ✓ {fn_name}")
+        except Exception as e:
+            print(f"  ✗ {fn_name}: {e}"); check_passed = False
+    if not check_passed:
+        print(f"✗ gate advance to {a.to_gate} BLOCKED — fix errors above", file=sys.stderr)
+        return 1
+    # Tag
+    import subprocess
+    tag = f"{a.prj}-gate-{a.to_gate}-done"
+    try:
+        subprocess.run(["git", "tag", "-a", tag, "-m", f"Gate {a.to_gate}"],
+                       cwd=a.prj, check=True, capture_output=True, timeout=10)
+        print(f"  ✓ tagged {tag}")
+    except subprocess.CalledProcessError as e:
+        print(f"  ✗ tag failed: {e.stderr.decode() if e.stderr else e}", file=sys.stderr)
+        return 2
+    print(f"✓ gate-{a.to_gate} advanced. Next: adversarial check via gtw-gatekeeper.")
+    return 0
+
+
+def cmd_reflect(a) -> int:
+    """Run reflection/dreaming loop: distil lessons from HANDOFFS into LESSONS."""
+    import subprocess, json
+    if a.prj:
+        # Per-project reflection
+        ctx = paths.project_dir(a.prj) / "_context"
+        if not ctx.exists():
+            print(f"✗ no _context for {a.prj}", file=sys.stderr); return 2
+        handoffs = ctx / "HANDOFFS.md"
+        lessons = ctx / "LESSONS.md"
+        if handoffs.exists():
+            h_text = handoffs.read_text()
+            # Count tickets
+            tickets_found = sum(1 for l in h_text.splitlines() if l.startswith("## "))
+            print(f"  {a.prj}: {tickets_found} ticket(s) found in HANDOFFS.md")
+            print(f"  Run `shamel brain recall {a.prj} --text lessons` to search memory.")
+            print(f"  To write a lesson, add to {lessons} in sig format.")
+        else:
+            print(f"  {a.prj}: no HANDOFFS.md found")
+    else:
+        # Org-level reflection: check brain/org/LESSONS.md
+        lessons_path = paths.repo_root() / "brain" / "org" / "LESSONS.md"
+        if lessons_path.exists():
+            lessons_text = lessons_path.read_text()
+            sig_count = lessons_text.count("LES-") if "LES-" in lessons_text else 0
+            print(f"  org-level LESSONS: ~{sig_count} lessons (sig format)")
+        else:
+            print(f"  no org LESSONS.md found")
+    print("✓ reflect done. To schedule: add `claude -p '/reflect'` to cron.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="shamel", description="SOFI AI agent tooling dispatcher")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -930,6 +1048,19 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("prj"); s.add_argument("--text", required=True, dest="text")
     s.add_argument("--k", type=int, default=8)
     s.set_defaults(fn=cmd_recall)
+
+    s = sub.add_parser("new", help="scaffold a new project: shamel new PRJ-XXXX 'Title' [MEDIUM|HIGH|LOW]")
+    s.add_argument("prj"); s.add_argument("title")
+    s.add_argument("priority", nargs="?", default="MEDIUM")
+    s.set_defaults(fn=cmd_new)
+
+    s = sub.add_parser("gate-advance", help="advance gate (validate + tag + checkpoint)")
+    s.add_argument("prj"); s.add_argument("to_gate", type=int)
+    s.set_defaults(fn=cmd_gate_advance)
+
+    s = sub.add_parser("reflect", help="run the dreaming loop: distil lessons from HANDOFFS")
+    s.add_argument("prj", nargs="?")
+    s.set_defaults(fn=cmd_reflect)
 
     return p
 
