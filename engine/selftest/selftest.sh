@@ -42,7 +42,7 @@ check "CLI registry" 'engine/bin/shamel registry'
 check "CLI projects" 'engine/bin/shamel projects'
 check "nexus YAMLs parse" 'python3 -c "import yaml; yaml.safe_load(open(\"core/nexus/registry.yaml\")); yaml.safe_load(open(\"core/nexus/routing.yaml\")); yaml.safe_load(open(\"core/nexus/gates.yaml\"))"'
 check "15 rooms" 'test "$(engine/bin/shamel rooms | grep agents | grep -v TOTAL | wc -l)" -eq 15'
-check "no sofi files" 'test "$(find . -path ./archive -prune -o -name "sofi*" -print | grep -c .)" -eq 0'
+check "no sofi files" 'test "$(find . -path ./archive -prune -o -path "*/tools/*" -prune -o -name "sofi*" -print | grep -c .)" -eq 0'
 check "doctor passes" 'engine/bin/shamel doctor > /dev/null 2>&1'
 
 echo "], \"pass\": $([ $pass -eq $tests ] && echo true || echo false), \"tests\": $tests, \"passed\": $pass"

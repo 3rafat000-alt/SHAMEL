@@ -182,6 +182,59 @@ def cmd_brain(a) -> int:
     return 0
 
 
+def cmd_brain_facts(a) -> int:
+    """Generate counted facts block with sha for a project."""
+    import hashlib, json
+    _need_project(a.prj)
+    prj = paths.project_dir(a.prj)
+    # Count models, controllers, tests, migrations, blade files
+    counts = {}
+    for pat, label in [("**/*.php", "php_files"), ("**/*.py", "py_files"),
+                       ("**/*.js", "js_files"), ("**/*.vue", "vue_files"),
+                       ("**/*.blade.php", "blade_files")]:
+        files = list(prj.glob(pat)) if prj.exists() else []
+        counts[label] = len(files)
+    counts_sha = hashlib.sha256(json.dumps(counts, sort_keys=True).encode()).hexdigest()[:12]
+    print(json.dumps({"counts": counts, "counts_sha": counts_sha}, indent=2))
+    return 0
+
+
+def cmd_brain_audit(a) -> int:
+    """Compare brain facts against code; exit ≠0 on deviation."""
+    import subprocess, json
+    _need_project(a.prj)
+    # Re-run brain facts to get current SHA
+    result = subprocess.run([sys.argv[0], "brain-facts", a.prj],
+                            capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"✗ brain-facts failed: {result.stderr}", file=sys.stderr)
+        return 2
+    try:
+        current = json.loads(result.stdout)
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"✗ brain-facts output invalid: {e}", file=sys.stderr)
+        return 2
+    # Read the stored counts_sha from STATE.md
+    st_path = paths.project_dir(a.prj) / "_context" / "STATE.md"
+    if st_path.exists():
+        stored = st_path.read_text()
+        import re
+        m = re.search(r'counts_sha[:\s]+(\w+)', stored)
+        if m and m.group(1) != current["counts_sha"]:
+            print(f"✗ counts_sha MISMATCH: stored={m.group(1)} current={current['counts_sha']}")
+            print(f"  Run `shamel brain-facts {a.prj}` and update STATE.md")
+            return 1
+        elif m:
+            print(f"✓ counts_sha match: {current['counts_sha']}")
+            return 0
+        else:
+            print(f"~ STATE.md has no counts_sha field — run brain-facts to generate")
+            return 0
+    else:
+        print(f"~ No STATE.md found at {st_path}")
+        return 0
+
+
 def cmd_brain_query(a) -> int:
     """Structured-brain query: `shamel brain-query PRJ status=blocked type=feature`.
     Filters the ticket queue by any field (canonical or frontmatter) — case-insensitive
@@ -602,7 +655,7 @@ def cmd_powers(a) -> int:
     return 0
 
 
-def cmd_doctor(_a) -> int:
+def cmd_doctor(a) -> int:
     import re as _re, glob as _glob
     print("━━ shamel doctor ━━")
     ok = True
@@ -655,6 +708,57 @@ def cmd_doctor(_a) -> int:
                   f"{', '.join(sorted(set(broken)))}"); ok = False
         else:
             print("  skills    : ✓ registry skill paths exist")
+
+    # ── brain checks (--brain flag adds detailed brain audit) ──────────────
+    brain_ok = True
+    if root and getattr(a, "brain", False):
+        brain_dir = root / "brain"
+        if not brain_dir.exists():
+            print("  brain     : ✗ brain/ directory not found"); brain_ok = False
+        else:
+            # Count templates
+            tmpl = list(brain_dir.glob("templates/*.md"))
+            print(f"  brain     : templates: {len(tmpl)}/8")
+            if len(tmpl) < 8:
+                print(f"             ✗ expected 8 templates, got {len(tmpl)}"); brain_ok = False
+            # Check OWNERS.yaml parses
+            owners_path = brain_dir / "OWNERS.yaml"
+            if owners_path.exists():
+                try:
+                    import yaml
+                    own = yaml.safe_load(owners_path.read_text())
+                    assert own.get("version") == 1
+                    n_own = len(own.get("owners", {}))
+                    print(f"             : OWNERS.yaml: {n_own} entries")
+                except Exception as e:
+                    print(f"             ✗ OWNERS.yaml: {e}"); brain_ok = False
+            else:
+                print("             ✗ OWNERS.yaml missing"); brain_ok = False
+            # Check brain.db exists and has observations
+            db_path = brain_dir / "db" / "brain.db"
+            if db_path.exists():
+                import sqlite3
+                try:
+                    conn = sqlite3.connect(str(db_path))
+                    n_obs = conn.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
+                    print(f"             : brain.db: {n_obs} observations")
+                    conn.close()
+                except Exception as e:
+                    print(f"             ✗ brain.db: {e}"); brain_ok = False
+            else:
+                print("             ✗ brain.db missing"); brain_ok = False
+            # Check LESSONS sig format
+            lessons_path = brain_dir / "org" / "LESSONS.md"
+            if lessons_path.exists():
+                lessons_text = lessons_path.read_text()
+                if "LES-" in lessons_text or "LES-NNN" in lessons_text:
+                    print(f"             : LESSOMS: sig format")
+                else:
+                    print(f"             ✗ LESSONS: missing sig format"); brain_ok = False
+        if brain_ok:
+            print(f"  brain     : ✓ PASS")
+        else:
+            ok = False
 
     print(f"  VERDICT   : {'PASS' if ok else 'FAIL'}")
     return 0 if ok else 1
@@ -709,7 +813,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("budget", help="effort_scaling + budgeted_autonomy from nexus/routing.yaml").set_defaults(fn=cmd_budget)
 
-    s = sub.add_parser("brain"); s.add_argument("prj"); s.set_defaults(fn=cmd_brain)
+    s = sub.add_parser("brain", help="show project brain state"); s.add_argument("prj"); s.set_defaults(fn=cmd_brain)
+
+    s = sub.add_parser("brain-facts", help="generate counted facts block with sha")
+    s.add_argument("prj"); s.set_defaults(fn=cmd_brain_facts)
+
+    s = sub.add_parser("brain-audit", help="compare brain facts against code; exit ≠0 on deviation")
+    s.add_argument("prj"); s.set_defaults(fn=cmd_brain_audit)
 
     s = sub.add_parser("brain-query", help="query the ticket queue by field, e.g. status=blocked type=feature")
     s.add_argument("prj"); s.add_argument("filters", nargs="*", default=[])
@@ -792,7 +902,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("tools").set_defaults(fn=cmd_tools)
     s = sub.add_parser("selftest"); s.add_argument("--json", action="store_true"); s.set_defaults(fn=cmd_selftest)
-    sub.add_parser("doctor").set_defaults(fn=cmd_doctor)
+    s = sub.add_parser("doctor"); s.add_argument("--brain", action="store_true"); s.set_defaults(fn=cmd_doctor)
 
     s = sub.add_parser("plan", help="freeze a task list (JSON, --file or stdin) into PLAN.dag.json")
     s.add_argument("prj"); s.add_argument("--file", default=None)
