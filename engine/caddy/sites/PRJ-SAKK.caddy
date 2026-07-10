@@ -1,0 +1,38 @@
+# PRJ-SAKK — native serving (Docker retired 2026-07-10), same pattern as
+# other Laravel projects on this host: php-fpm via the shared `sofi` pool.
+#
+# The cloudflared tunnel (system-managed, dashboard-configured) forwards
+# *.zanjour.com/zanjour.com to http://localhost:80 with an httpHostHeader
+# override — the Host header Caddy sees is literally "localhost", not the
+# real domain. The real domain travels in X-Forwarded-Host instead, so
+# public traffic is matched on that header. Direct local access (sakk.local,
+# or Host: sakk.zanjour.com without going through the tunnel) still matches
+# on the literal host.
+
+sakk.zanjour.com:80, sakk.local:80 {
+    root * /home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public
+    encode gzip
+    php_fastcgi unix//run/php/sofi.sock
+    file_server
+}
+
+:80 {
+    @sakk_via_tunnel header X-Forwarded-Host sakk.zanjour.com
+    handle @sakk_via_tunnel {
+        # The tunnel rewrites Host to "localhost" before it reaches us; put the
+        # real domain back so Laravel's url()/asset() generation (and CSP
+        # script-src 'self') resolve correctly instead of pointing at localhost.
+        request_header Host sakk.zanjour.com
+        root * /home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public
+        encode gzip
+        # This request only reaches us after Cloudflare already terminated real
+        # HTTPS for the client — assert that to PHP directly (the nginx-standard
+        # `fastcgi_param HTTPS on` idiom) rather than expanding Laravel's
+        # TrustProxies header trust, which is deliberately scoped narrow
+        # (see bootstrap/app.php) for IP-spoofing-surface reasons unrelated to this.
+        php_fastcgi unix//run/php/sofi.sock {
+            env HTTPS on
+        }
+        file_server
+    }
+}
