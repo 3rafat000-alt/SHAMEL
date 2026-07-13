@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SHAMEL — لوحة الحالة</title>
+<style>
+:root{
+  --bg:#0c1017; --card:#141b26; --ink:#e6edf6; --muted:#8496ad; --border:#232d3c;
+  --accent:#2dd4bf; --good:#3fb950; --good-bg:#132a19; --bad:#f85149; --bad-bg:#2c1516;
+  --idle:#8b98a8; --idle-bg:#1a2230; --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Kufi Arabic",sans-serif;
+}
+@media (prefers-color-scheme:light){
+  :root{--bg:#f5f7fa;--card:#fff;--ink:#182231;--muted:#5c6b82;--border:#e3e8ef;
+    --accent:#0d9488;--good:#1a7f37;--good-bg:#e8f6ec;--bad:#cf222e;--bad-bg:#fbe9ea;
+    --idle:#57606a;--idle-bg:#eef1f4;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 20px 60px}
+header{margin-bottom:24px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:12.5px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0 28px}
+.tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.tile .n{font-family:var(--mono);font-size:26px;font-weight:700}
+.tile .l{color:var(--muted);font-size:11.5px;margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.card>.hd{padding:14px 18px;border-bottom:1px solid var(--border);font-weight:700;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:start;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:10px 18px;border-bottom:1px solid var(--border)}
+td{padding:10px 18px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.mono{font-family:var(--mono);direction:ltr;unicode-bidi:plaintext}
+.small{font-size:11.5px;color:var(--muted)}
+.muted{color:var(--muted)}
+.url{color:var(--accent);text-decoration:none;font-family:var(--mono);direction:ltr;unicode-bidi:plaintext}
+.url:hover{text-decoration:underline}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;font-family:var(--mono)}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.good{color:var(--good);background:var(--good-bg)}
+.chip.bad{color:var(--bad);background:var(--bad-bg)}
+.chip.idle{color:var(--idle);background:var(--idle-bg)}
+footer{color:var(--muted);font-size:11.5px;text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>SHAMEL — لوحة الحالة</h1>
+    <div class="sub">آخر تحديث: 2026-07-13 14:26:21 UTC · تُعاد هذه الصفحة تلقائياً كل بضع دقائق (قراءة فقط)</div>
+  </header>
+
+  <div class="tiles">
+    <div class="tile"><div class="n">12</div><div class="l">خدمات مراقَبة</div></div>
+    <div class="tile"><div class="n">1</div><div class="l">روابط عامة</div></div>
+    <div class="tile"><div class="n">2</div><div class="l">مواقع Caddy</div></div>
+  </div>
+
+  <div class="card">
+    <div class="hd">الروابط العامة</div>
+    <table><thead><tr><th>الرابط</th><th>النفق</th><th>الحالة</th></tr></thead>
+    <tbody><tr><td><a class="url" href="https://sakk.zanjour.com/" target="_blank" rel="noopener">sakk.zanjour.com</a></td><td class="mono">SOFI_AI</td><td><span class="chip bad">لا استجابة</span></td></tr></tbody></table>
+  </div>
+
+  <div class="card">
+    <div class="hd">الخدمات</div>
+    <table><thead><tr><th>الخدمة</th><th>الحالة</th></tr></thead>
+    <tbody><tr><td class="mono">mysql</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">postgresql@18-main</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">redis-server</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">caddy</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">php8.5-fpm</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">tor@default</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">docker</td><td><span class="chip idle">inactive</span></td></tr>
+<tr><td class="mono">cups</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">cups-browsed</td><td><span class="chip good">active</span></td></tr>
+<tr><td class="mono">cloudflared</td><td><span class="chip bad">activating</span></td></tr>
+<tr><td class="mono">cloudflared-sofi.service</td><td><span class="chip bad">activating</span></td></tr>
+<tr><td class="mono">sofi-dashboard.service</td><td><span class="chip bad">activating</span></td></tr></tbody></table>
+  </div>
+
+  <div class="card">
+    <div class="hd">مسارات Caddy</div>
+    <table><thead><tr><th>الدومين</th><th>الملف</th><th>الوجهة</th></tr></thead>
+    <tbody><tr><td class="mono">sakk.local</td><td class="mono small">PRJ-SAKK.caddy</td><td class="mono small">/home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public</td></tr>
+<tr><td class="mono">sakk.zanjour.com</td><td class="mono small">PRJ-SAKK.caddy</td><td class="mono small">/home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public</td></tr></tbody></table>
+  </div>
+
+  <footer>صفحة للقراءة فقط — بدون أي تحكم أو صلاحيات كتابة</footer>
+</div>
+</body>
+</html>

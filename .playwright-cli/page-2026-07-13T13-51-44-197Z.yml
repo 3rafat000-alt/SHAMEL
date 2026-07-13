@@ -1,0 +1,399 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e5]:
+      - button "burger" [ref=e6] [cursor=pointer]:
+        - img "burger" [ref=e7]
+      - img "ccpayment logo" [ref=e9] [cursor=pointer]
+      - button "Log in" [ref=e11] [cursor=pointer]
+      - generic [ref=e12]:
+        - button "burger" [ref=e14] [cursor=pointer]:
+          - img "burger" [ref=e15]
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - paragraph [ref=e18]: Products
+            - img "burger" [ref=e19]
+          - list:
+            - listitem [ref=e20]:
+              - link "Payment API" [ref=e21] [cursor=pointer]:
+                - /url: /en/products/api/payment
+                - generic [ref=e23]: Payment API
+            - listitem [ref=e24]:
+              - link "Wallet API" [ref=e25] [cursor=pointer]:
+                - /url: /en/products/api/wallet
+                - generic [ref=e27]: Wallet API
+            - listitem [ref=e28]:
+              - link "Swap" [ref=e29] [cursor=pointer]:
+                - /url: https://console.ccpayment.com/balances
+                - generic [ref=e31]: Swap
+            - listitem [ref=e32]:
+              - link "USD Settlement" [ref=e33] [cursor=pointer]:
+                - /url: https://console.ccpayment.com/login
+                - generic [ref=e35]: USD Settlement
+            - listitem [ref=e36]:
+              - link "Rent TRX" [ref=e37] [cursor=pointer]:
+                - /url: https://console.ccpayment.com/balances/trx-rent
+                - generic [ref=e39]: Rent TRX
+            - listitem [ref=e40]:
+              - link "Invoicing" [ref=e41] [cursor=pointer]:
+                - /url: https://console.ccpayment.com/invoice
+                - generic [ref=e43]: Invoicing
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Solutions
+            - img "burger" [ref=e47]
+          - list:
+            - listitem [ref=e48]:
+              - link "eCommerce" [ref=e49] [cursor=pointer]:
+                - /url: /en/ecommerce
+                - generic [ref=e51]: eCommerce
+            - listitem [ref=e52]:
+              - link "Bot & Mini App" [ref=e53] [cursor=pointer]:
+                - /url: /en/bot
+                - generic [ref=e55]: Bot & Mini App
+            - listitem [ref=e56]:
+              - link "Faucet" [ref=e57] [cursor=pointer]:
+                - /url: /en/faucet
+                - generic [ref=e59]: Faucet
+            - listitem [ref=e60]:
+              - link "Forex Broker" [ref=e61] [cursor=pointer]:
+                - /url: /en/broker
+                - generic [ref=e63]: Forex Broker
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - paragraph [ref=e66]: Developers
+            - img "burger" [ref=e67]
+          - list:
+            - listitem [ref=e68]:
+              - link "Payment API" [ref=e69] [cursor=pointer]:
+                - /url: https://ccpayment.com/api/doc?en
+                - generic [ref=e71]: Payment API
+            - listitem [ref=e72]:
+              - link "Withdrawal API" [ref=e73] [cursor=pointer]:
+                - /url: https://ccpayment.com/api/doc?en#withdrawal-api
+                - generic [ref=e75]: Withdrawal API
+            - listitem [ref=e76]:
+              - link "Wallet API" [ref=e77] [cursor=pointer]:
+                - /url: https://ccpayment.com/api/doc?en#create-a-wallet-system
+                - generic [ref=e79]: Wallet API
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - paragraph [ref=e82]: Resources
+            - img "burger" [ref=e83]
+          - list:
+            - listitem [ref=e84]:
+              - link "About Us" [ref=e85] [cursor=pointer]:
+                - /url: /en/about-us
+                - generic [ref=e87]: About Us
+            - listitem [ref=e88]:
+              - link "Blog" [ref=e89] [cursor=pointer]:
+                - /url: https://ccpayment.com/blog
+                - generic [ref=e91]: Blog
+            - listitem [ref=e92]:
+              - link "Careers" [ref=e93] [cursor=pointer]:
+                - /url: /en/careers
+                - generic [ref=e95]: Careers
+            - listitem [ref=e96]:
+              - link "Support" [ref=e97] [cursor=pointer]:
+                - /url: https://ccpayment.com/support-center
+                - generic [ref=e99]: Support
+            - listitem [ref=e100]:
+              - link "FAQ" [ref=e101] [cursor=pointer]:
+                - /url: https://ccpayment.com/support-center/faqs
+                - generic [ref=e103]: FAQ
+        - paragraph [ref=e106]: Fees
+        - paragraph [ref=e109]: Crypto Directory
+        - paragraph [ref=e112]: Affiliate
+        - paragraph [ref=e115]: Demo
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: English
+            - img "burger"
+          - generic:
+            - list:
+              - listitem [ref=e119]:
+                - generic [ref=e120]: English
+              - listitem [ref=e121]:
+                - generic [ref=e122]: 日本語
+              - listitem [ref=e123]:
+                - generic [ref=e124]: Italiana
+              - listitem [ref=e125]:
+                - generic [ref=e126]: Española
+              - listitem [ref=e127]:
+                - generic [ref=e128]: Українська
+              - listitem [ref=e129]:
+                - generic [ref=e130]: Português
+              - listitem [ref=e131]:
+                - generic [ref=e132]: 한국인
+              - listitem [ref=e133]:
+                - generic [ref=e134]: Polski
+              - listitem [ref=e135]:
+                - generic [ref=e136]: Dutch
+              - listitem [ref=e137]:
+                - generic [ref=e138]: Tagalog
+              - listitem [ref=e139]:
+                - generic [ref=e140]: Melayu
+              - listitem [ref=e141]:
+                - generic [ref=e142]: 简体中文
+              - listitem [ref=e143]:
+                - generic [ref=e144]: Bahasa Indonesia
+              - listitem [ref=e145]:
+                - generic [ref=e146]: Français
+              - listitem [ref=e147]:
+                - generic [ref=e148]: پاکستان
+              - listitem [ref=e149]:
+                - generic [ref=e150]: Deutsch
+              - listitem [ref=e151]:
+                - generic [ref=e152]: မြန်မာ
+              - listitem [ref=e153]:
+                - generic [ref=e154]: عربي
+              - listitem [ref=e155]:
+                - generic [ref=e156]: 繁體中文
+              - listitem [ref=e157]:
+                - generic [ref=e158]: हिंदी
+              - listitem [ref=e159]:
+                - generic [ref=e160]: Русский
+              - listitem [ref=e161]:
+                - generic [ref=e162]: नेपाली
+              - listitem [ref=e163]:
+                - generic [ref=e164]: Türk
+              - listitem [ref=e165]:
+                - generic [ref=e166]: বাংলা
+              - listitem [ref=e167]:
+                - generic [ref=e168]: Tiếng Việt
+    - main [ref=e169]:
+      - link "telegram" [ref=e171] [cursor=pointer]:
+        - /url: https://t.me/CCPaymentSupportBot
+        - img "telegram" [ref=e172]
+      - generic [ref=e173]:
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - generic [ref=e178]: Faq
+            - generic [ref=e179]:
+              - generic [ref=e180]:
+                - generic [ref=e181] [cursor=pointer]: Support Center
+                - img [ref=e183]
+              - generic [ref=e185]: FAQ
+          - generic [ref=e187]:
+            - img [ref=e188]
+            - textbox "Search" [ref=e191]
+        - generic [ref=e196]:
+          - img [ref=e197] [cursor=pointer]
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - generic [ref=e201] [cursor=pointer]:
+                - generic [ref=e202]:
+                  - img [ref=e204]
+                  - generic [ref=e207]: API
+                - img [ref=e208]
+              - generic [ref=e215] [cursor=pointer]: API Key
+            - generic [ref=e216]:
+              - generic [ref=e217] [cursor=pointer]:
+                - generic [ref=e218]:
+                  - img [ref=e220]
+                  - generic [ref=e223]: Account&Security
+                - img [ref=e224]
+              - generic [ref=e227]:
+                - generic [ref=e231] [cursor=pointer]: Account Management
+                - generic [ref=e235] [cursor=pointer]: Security
+            - generic [ref=e236]:
+              - generic [ref=e237] [cursor=pointer]:
+                - generic [ref=e238]:
+                  - img [ref=e240]
+                  - generic [ref=e243]: Tokens&Chains
+                - img [ref=e244]
+              - generic [ref=e247]:
+                - generic [ref=e251] [cursor=pointer]: Supported Tokens
+                - generic [ref=e255] [cursor=pointer]: Supported Chains
+            - generic [ref=e256]:
+              - generic [ref=e257] [cursor=pointer]:
+                - generic [ref=e258]:
+                  - img [ref=e260]
+                  - generic [ref=e265]: Fee Structure
+                - img [ref=e266]
+              - generic [ref=e269]:
+                - generic [ref=e273] [cursor=pointer]: Service Fee
+                - generic [ref=e277] [cursor=pointer]: Network Fee
+            - generic [ref=e278]:
+              - generic [ref=e279] [cursor=pointer]:
+                - generic [ref=e280]:
+                  - img [ref=e282]
+                  - generic [ref=e284]: Deposit
+                - img [ref=e285]
+              - generic [ref=e288]:
+                - generic [ref=e292] [cursor=pointer]: Deposit Guide
+                - generic [ref=e296] [cursor=pointer]: Crypto Deposit
+            - generic [ref=e297]:
+              - generic [ref=e298] [cursor=pointer]:
+                - generic [ref=e299]:
+                  - img [ref=e301]
+                  - generic [ref=e307]: Withdrawal
+                - img [ref=e308]
+              - generic [ref=e311]:
+                - generic [ref=e315] [cursor=pointer]: Withdrawal Guide
+                - generic [ref=e319] [cursor=pointer]: Crypto Withdrawal
+            - generic [ref=e320]:
+              - generic [ref=e321] [cursor=pointer]:
+                - generic [ref=e322]:
+                  - img [ref=e324]
+                  - generic [ref=e326]: Swap
+                - img [ref=e327]
+              - generic [ref=e334] [cursor=pointer]: Crypto Swap
+            - generic [ref=e335]:
+              - generic [ref=e336] [cursor=pointer]:
+                - generic [ref=e337]:
+                  - img [ref=e339]
+                  - generic [ref=e343]: Webhook
+                - img [ref=e344]
+              - generic [ref=e347]:
+                - generic [ref=e351] [cursor=pointer]: Webhook Notifications
+                - generic [ref=e355] [cursor=pointer]: Resend Webhook
+            - generic [ref=e356]:
+              - generic [ref=e357] [cursor=pointer]:
+                - generic [ref=e358]:
+                  - img [ref=e360]
+                  - generic [ref=e363]: Features
+                - img [ref=e364]
+              - generic [ref=e367]:
+                - generic [ref=e371] [cursor=pointer]: USD Settlement
+                - generic [ref=e375] [cursor=pointer]: Funds
+                - generic [ref=e379] [cursor=pointer]: Transaction
+            - generic [ref=e380]:
+              - generic [ref=e381] [cursor=pointer]:
+                - generic [ref=e382]:
+                  - img [ref=e384]
+                  - generic [ref=e387]: Risk-Funds Screening
+                - img [ref=e388]
+              - generic [ref=e391]:
+                - generic [ref=e395] [cursor=pointer]: Risky Payments Guide
+                - generic [ref=e399] [cursor=pointer]: Risky Address Guide
+                - generic [ref=e403] [cursor=pointer]: Risk-Funds Processing Fees
+            - generic [ref=e404]:
+              - generic [ref=e405] [cursor=pointer]:
+                - generic [ref=e406]:
+                  - img [ref=e408]
+                  - generic [ref=e412]: Rent Tron Energy
+                - img [ref=e413]
+              - generic [ref=e420] [cursor=pointer]: Rent Tron Energy
+            - generic [ref=e421]:
+              - generic [ref=e422] [cursor=pointer]:
+                - generic [ref=e423]:
+                  - img [ref=e425]
+                  - generic [ref=e428]: Others
+                - img [ref=e429]
+              - generic [ref=e432]:
+                - generic [ref=e436] [cursor=pointer]: TestNet
+                - generic [ref=e440] [cursor=pointer]: Affiliate Program
+                - generic [ref=e444] [cursor=pointer]: Other
+    - contentinfo [ref=e447]:
+      - generic [ref=e448]:
+        - generic [ref=e449]:
+          - img "CCPayment" [ref=e450]
+          - paragraph [ref=e451]: CCPayment is the next-gen blockchain payment infrastructure built for global commerce. We empower businesses to scale limitlessly through an AI-assisted unified API, offering seamless access to 100+ blockchains and secure, chargeback-free settlements.
+          - generic [ref=e453]:
+            - img [ref=e454]
+            - paragraph [ref=e465]:
+              - strong [ref=e466]: "4.4"
+              - text: out of 5
+            - generic [ref=e467]:
+              - img [ref=e468]
+              - generic [ref=e470]: Trustpilot
+          - list [ref=e471]:
+            - listitem [ref=e472]:
+              - link "LinkedIn" [ref=e473] [cursor=pointer]:
+                - /url: https://www.linkedin.com/company/ccpayment
+            - listitem [ref=e474]:
+              - link "X" [ref=e475] [cursor=pointer]:
+                - /url: https://x.com/CCPaymentX
+            - listitem [ref=e476]:
+              - link "Email" [ref=e477] [cursor=pointer]:
+                - /url: mailto:partner@ccpayment.com
+            - listitem [ref=e478]:
+              - link "Medium" [ref=e479] [cursor=pointer]:
+                - /url: https://ccpayment.medium.com/
+            - listitem [ref=e480]:
+              - link "Telegram" [ref=e481] [cursor=pointer]:
+                - /url: https://t.me/ccpayment_com
+        - generic [ref=e482]:
+          - navigation "Products" [ref=e483]:
+            - button "Products" [ref=e484]:
+              - generic [ref=e485]: Products
+            - list [ref=e486]:
+              - listitem [ref=e487]:
+                - link "Crypto Payments" [ref=e488] [cursor=pointer]:
+                  - /url: /en/products/api/payment
+              - listitem [ref=e489]:
+                - link "Crypto Wallet" [ref=e490] [cursor=pointer]:
+                  - /url: /en/products/api/wallet
+              - listitem [ref=e491]:
+                - link "USD Settlement" [ref=e492] [cursor=pointer]:
+                  - /url: https://console.ccpayment.com/login
+              - listitem [ref=e493]:
+                - link "Rent TRX" [ref=e494] [cursor=pointer]:
+                  - /url: https://console.ccpayment.com/balances/trx-rent
+              - listitem [ref=e495]:
+                - link "Exchange" [ref=e496] [cursor=pointer]:
+                  - /url: https://console.ccpayment.com/balances
+              - listitem [ref=e497]:
+                - link "Invoicing" [ref=e498] [cursor=pointer]:
+                  - /url: https://console.ccpayment.com/invoice
+          - navigation "Solutions" [ref=e499]:
+            - button "Solutions" [ref=e500]:
+              - generic [ref=e501]: Solutions
+            - list [ref=e502]:
+              - listitem [ref=e503]:
+                - link "Bot & Mini App" [ref=e504] [cursor=pointer]:
+                  - /url: /en/bot
+              - listitem [ref=e505]:
+                - link "eCommerce" [ref=e506] [cursor=pointer]:
+                  - /url: /en/ecommerce
+              - listitem [ref=e507]:
+                - link "Faucet" [ref=e508] [cursor=pointer]:
+                  - /url: /en/faucet
+              - listitem [ref=e509]:
+                - link "Forex Broker" [ref=e510] [cursor=pointer]:
+                  - /url: /en/broker
+              - listitem [ref=e511]: Developer
+              - listitem [ref=e512]:
+                - link "Documentation" [ref=e513] [cursor=pointer]:
+                  - /url: https://ccpayment.com/api/doc?en
+          - navigation "Resources" [ref=e514]:
+            - button "Resources" [ref=e515]:
+              - generic [ref=e516]: Resources
+            - list [ref=e517]:
+              - listitem [ref=e518]:
+                - link "Fees" [ref=e519] [cursor=pointer]:
+                  - /url: /en/fees
+              - listitem [ref=e520]:
+                - link "Affiliate" [ref=e521] [cursor=pointer]:
+                  - /url: /en/affiliate
+              - listitem [ref=e522]:
+                - link "About Us" [ref=e523] [cursor=pointer]:
+                  - /url: /en/about-us
+              - listitem [ref=e524]:
+                - link "Blog" [ref=e525] [cursor=pointer]:
+                  - /url: https://ccpayment.com/blog/
+              - listitem [ref=e526]:
+                - link "Support" [ref=e527] [cursor=pointer]:
+                  - /url: https://ccpayment.com/support-center
+              - listitem [ref=e528]:
+                - link "Careers" [ref=e529] [cursor=pointer]:
+                  - /url: /en/careers
+              - listitem [ref=e530]:
+                - link "Staff Verification" [ref=e531] [cursor=pointer]:
+                  - /url: /en/verification
+      - generic [ref=e532]:
+        - list [ref=e534]:
+          - listitem [ref=e535]:
+            - link "Terms of Service" [ref=e536] [cursor=pointer]:
+              - /url: https://ccpayment.com/en/privacy-policy#ccpayment-service-agreement
+          - listitem [ref=e537]:
+            - link "Privacy Policy" [ref=e538] [cursor=pointer]:
+              - /url: https://ccpayment.com/en/privacy-policy
+          - listitem [ref=e539]:
+            - link "AML & Compliance" [ref=e540] [cursor=pointer]:
+              - /url: https://ccpayment.com/en/privacy-policy#ccpayment-financial-policy
+        - generic [ref=e541]:
+          - paragraph [ref=e542]: CCPayment Services are provided by CCPayment Ltd. (Company No. 250130), 306 Victoria House, Victoria, Mahe, Seychelles.
+          - paragraph [ref=e543]: CCPayment Ltd. is registered as an MSB with FinCEN, enabling it to offer crypto custody and payment services.
+        - paragraph [ref=e544]: © 2026 CCPayment. All rights reserved.
+  - alert [ref=e545]

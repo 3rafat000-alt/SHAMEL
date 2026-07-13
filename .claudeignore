@@ -4,3 +4,16 @@ archive/
 *.tar.gz
 *.log
 __pycache__/
+# Dependencies
+vendor/
+node_modules/
+# Build artifacts
+*.dist
+*.build
+# IDE
+.idea/
+*.swp
+*.swo
+# OS
+.DS_Store
+Thumbs.db

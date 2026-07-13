@@ -14,9 +14,9 @@
 
 | Layer | Path | Purpose |
 |-------|------|---------|
-| Governance | `core/` | Constitution, Nexus, rooms, gates |
-| Deterministic | `engine/` | `shamel` CLI, tooling, scanners |
-| Memory | `brain/` | Org knowledge, templates, memdb |
+| Governance | `shamel/core/` | Constitution, Nexus, rooms, gates |
+| Deterministic | `shamel/engine/` | `shamel` CLI, tooling, scanners |
+| Memory | `shamel/brain/` | Org knowledge, templates, memdb |
 | Projects | `projects/` | Isolated product repos |
 | Integration | `.claude/` | Hooks, skills, agents, commands |
 | Archive | `archive/` | Retired generations with tombstones |
@@ -30,10 +30,22 @@
 - Builder never self-grades (P5)
 - Flat topology inside Claude Code (P6)
 
+## Pipeline (MANDATORY — no exceptions)
+
+```
+User raw input
+    ↓ [إجباري — لا يمكن تخطي]
+gtw-intake-reformer → brd-ceo (+ board via Task) → room leads (via Task) → agents
+    ↓ [إجباري]
+room lead → brd-ceo → user
+```
+
+**مخالفة التدفق = مخالفة دستورية. النظام يرفض الرد.**
+
 ## Entry
 
 ```bash
-shamel doctor      # system health
-shamel selftest    # deterministic pass/fail
-shamel agents lint # agent file checks
+PYTHONPATH=shamel/engine shamel doctor      # system health
+PYTHONPATH=shamel/engine shamel selftest    # deterministic pass/fail
+PYTHONPATH=shamel/engine shamel agents lint # agent file checks
 ```
