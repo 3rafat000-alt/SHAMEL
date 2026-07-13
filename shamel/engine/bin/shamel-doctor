@@ -1,0 +1,354 @@
+#!/usr/bin/env bash
+# shamel-doctor — Enhanced SHAMEL system health check
+# Checks all agents, registry, brain, MCP, git, and Python imports
+set -euo pipefail
+
+source "$(dirname "$0")/shamel-pipeline.sh"
+
+usage() {
+  echo "Usage: $(basename "$0") [options]"
+  echo
+  echo "Options:"
+  echo "  --quick     Skip slow checks (MCP, Python imports)"
+  echo "  --mcp       Check MCP server connectivity"
+  echo "  --git       Detailed git status"
+  echo "  --verbose   Verbose output"
+  echo "  -h, --help  Show this help"
+  exit 1
+}
+
+# ── Check categories ──────────────────────────────────────────────────────────
+check::agents() {
+  shamel::header "Agent Check"
+  local ok=0 total=0 failed=0
+
+  while IFS= read -r agent; do
+    total=$((total + 1))
+    local file="${SHAMEL_AGENTS}/${agent}.md"
+    if [[ ! -f "$file" ]]; then
+      shamel::error "agent file missing: ${agent}"
+      failed=$((failed + 1)); ok=1
+      continue
+    fi
+
+    # Check frontmatter
+    if ! head -1 "$file" | grep -q '^---$'; then
+      shamel::error "${agent}: missing frontmatter (no opening ---)"
+      failed=$((failed + 1)); ok=1
+      continue
+    fi
+
+    # Check required frontmatter fields
+    local missing_fields=()
+    for field in "name:" "description:" "model:" "tools:"; do
+      if ! grep -q "^${field}" "$file"; then
+        missing_fields+=("${field%:}")
+      fi
+    done
+    if [[ ${#missing_fields[@]} -gt 0 ]]; then
+      shamel::error "${agent}: missing frontmatter fields: ${missing_fields[*]}"
+      failed=$((failed + 1)); ok=1
+    fi
+  done < <(shamel::all_agents)
+
+  if [[ "$total" -gt 0 ]]; then
+    local passed=$((total - failed))
+    echo "  ${passed}/${total} agents pass frontmatter check"
+  fi
+  return $ok
+}
+
+check::registry_parity() {
+  shamel::header "Registry ↔ Agent Parity"
+  local ok=0
+
+  # Check shamel/agents vs shamel/core/rooms/*/agents parity
+  local spawnables=0 specs=0
+  spawnables=$(find "${SHAMEL_AGENTS}" -name '*.md' | wc -l)
+  specs=$(find "${SHAMEL_ROOMS}" -path '*/agents/*.md' | wc -l)
+
+  echo "  shamel/agents/:  ${spawnables} files"
+  echo "  shamel/core/rooms/*/agents/: ${specs} files"
+
+  if [[ "$spawnables" -eq "$specs" ]]; then
+    shamel::log "Parity: ${spawnables} = ${specs}"
+  else
+    shamel::warn "Parity mismatch: ${spawnables} ≠ ${specs}"
+
+    # Find what's missing on each side
+    local missing_specs=()
+    while IFS= read -r agent; do
+      if ! find "${SHAMEL_ROOMS}" -path "*/agents/${agent}.md" | grep -q .; then
+        missing_specs+=("$agent")
+      fi
+    done < <(shamel::all_agents)
+    if [[ ${#missing_specs[@]} -gt 0 ]]; then
+      shamel::warn "No room spec for: ${missing_specs[*]}"
+    fi
+
+    local missing_spawnables=()
+    for spec in "${SHAMEL_ROOMS}"/*/agents/*.md; do
+      local agent_id
+      agent_id=$(basename "$spec" .md)
+      if [[ ! -f "${SHAMEL_AGENTS}/${agent_id}.md" ]]; then
+        missing_spawnables+=("$agent_id")
+      fi
+    done
+    if [[ ${#missing_spawnables[@]} -gt 0 ]]; then
+      shamel::warn "No spawnable for: ${missing_spawnables[*]}"
+    fi
+
+    ok=1
+  fi
+
+  return $ok
+}
+
+check::rooms() {
+  shamel::header "Room Check"
+  local ok=0
+
+  for room in $(shamel::all_rooms); do
+    local room_dir="${SHAMEL_ROOMS}/${room}"
+    local room_name
+    room_name=$(sed 's/^[0-9]*-//' <<< "$room")
+
+    # Required files
+    if [[ ! -f "${room_dir}/CHARTER.md" ]]; then
+      shamel::error "${room}: missing CHARTER.md"
+      ok=1; continue
+    fi
+
+    if [[ ! -d "${room_dir}/agents" ]]; then
+      shamel::error "${room}: missing agents/ directory"
+      ok=1; continue
+    fi
+
+    local agent_count
+    agent_count=$(find "${room_dir}/agents" -name '*.md' | wc -l)
+    local lead
+    lead=$(shamel::room_lead "$room" 2>/dev/null || echo "")
+
+    echo "  ${room} (${room_name}): ${agent_count} agents, lead=${lead:-none}"
+  done
+  return $ok
+}
+
+check::brain() {
+  shamel::header "Brain Check"
+  local ok=0
+
+  # Required brain files
+  for f in BRAIN.md; do
+    if [[ -f "${SHAMEL_BRAIN}/${f}" ]]; then
+      echo "  ✓ brain/${f}"
+    else
+      shamel::error "brain/${f} missing"
+      ok=1
+    fi
+  done
+
+  # Org files
+  for f in DECISIONS.md LESSONS.md EVOLUTION.md PERSONAS.md TEAM_STATUS.md; do
+    if [[ -f "${SHAMEL_BRAIN}/org/${f}" ]]; then
+      local lines
+      lines=$(wc -l < "${SHAMEL_BRAIN}/org/${f}")
+      echo "  ✓ brain/org/${f} (${lines} lines)"
+    else
+      shamel::warn "brain/org/${f} missing"
+    fi
+  done
+
+  # Templates
+  local tmpl_count=0
+  if [[ -d "${SHAMEL_BRAIN}/templates" ]]; then
+    tmpl_count=$(find "${SHAMEL_BRAIN}/templates" -name '*.md' | wc -l)
+  fi
+  echo "  brain/templates/: ${tmpl_count} template(s)"
+
+  return $ok
+}
+
+check::mcp() {
+  shamel::header "MCP Server Check"
+  local ok=0
+
+  # Check common MCP ports
+  local mcp_host="${SHAMEL_MCP_HOST:-localhost}"
+  local mcp_ports=()
+  mcp_ports+=("${SHAMEL_MCP_PORT:-8101}")
+
+  # Try to find MCP config
+  if [[ -f "${SHAMEL_HOME}/.vscode/mcp.json" ]]; then
+    echo "  .vscode/mcp.json found"
+    local mcp_urls
+    mcp_urls=$(grep -oP '"url"\s*:\s*"\K[^"]+' "${SHAMEL_HOME}/.vscode/mcp.json" 2>/dev/null || true)
+    if [[ -n "$mcp_urls" ]]; then
+      while IFS= read -r url; do
+        local port
+        port=$(echo "$url" | grep -oP ':\K\d+' || echo "")
+        [[ -n "$port" ]] && mcp_ports+=("$port")
+      done <<< "$mcp_urls"
+    fi
+  fi
+
+  local found=0
+  for port in "${mcp_ports[@]}"; do
+    if command -v nc &>/dev/null; then
+      if nc -z -w 2 "$mcp_host" "$port" 2>/dev/null; then
+        shamel::log "MCP server reachable at ${mcp_host}:${port}"
+        found=1
+      fi
+    elif command -v curl &>/dev/null; then
+      if curl -s "http://${mcp_host}:${port}/health" --max-time 2 &>/dev/null; then
+        shamel::log "MCP server responding at ${mcp_host}:${port}"
+        found=1
+      fi
+    fi
+  done
+
+  if [[ "$found" -eq 0 ]]; then
+    shamel::warn "No MCP server detected (checked ports: ${mcp_ports[*]})"
+    shamel::warn "Set SHAMEL_MCP_HOST and SHAMEL_MCP_PORT or start the server"
+    ok=1
+  fi
+
+  return $ok
+}
+
+check::git() {
+  shamel::header "Git Status"
+  local ok=0
+
+  if [[ ! -d "${SHAMEL_HOME}/.git" ]]; then
+    shamel::error "Not a git repository"
+    return 1
+  fi
+
+  # Basic status
+  local branch
+  branch=$(git -C "$SHAMEL_HOME" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "detached")
+  echo "  Branch: ${branch}"
+
+  local sha
+  sha=$(git -C "$SHAMEL_HOME" rev-parse --short HEAD 2>/dev/null || echo "?")
+  echo "  HEAD:   ${sha}"
+
+  # Check for dirty files
+  local dirty
+  dirty=$(git -C "$SHAMEL_HOME" status --porcelain 2>/dev/null | wc -l)
+  if [[ "$dirty" -gt 0 ]]; then
+    shamel::warn "${dirty} uncommitted file(s)"
+    if [[ "${VERBOSE:-0}" -eq 1 ]]; then
+      git -C "$SHAMEL_HOME" status --short 2>/dev/null | sed 's/^/    /'
+    fi
+  else
+    echo "  Working tree: clean"
+  fi
+
+  # Check recent commits
+  echo "  Recent commits:"
+  git -C "$SHAMEL_HOME" log --oneline -5 2>/dev/null | sed 's/^/    /'
+
+  # Check for stashed changes
+  local stash_count
+  stash_count=$(git -C "$SHAMEL_HOME" stash list 2>/dev/null | wc -l)
+  if [[ "$stash_count" -gt 0 ]]; then
+    echo "  Stashes: ${stash_count}"
+  fi
+
+  return $ok
+}
+
+check::python_imports() {
+  shamel::header "Python Import Check"
+  local ok=0
+
+  if ! command -v python3 &>/dev/null; then
+    shamel::error "python3 not found"
+    return 1
+  fi
+
+  local imports=(
+    "shamel_tools.paths"
+    "shamel_tools.registry"
+    "shamel_tools.brain"
+    "shamel_tools.tickets"
+    "shamel_tools.routing"
+    "shamel_tools.gates"
+    "shamel_tools.guard"
+    "shamel_tools.runlog"
+    "shamel_tools.brain_client"
+    "shamel_tools.orchestrator"
+    "shamel_tools.agent_runner"
+    "shamel_tools.task_agent"
+  )
+
+  local failed=0
+  for mod in "${imports[@]}"; do
+    if PYTHONPATH="${SHAMEL_HOME}/shamel/engine" python3 -c "import ${mod}" 2>/dev/null; then
+      echo "  ✓ ${mod}"
+    else
+      shamel::error "import failed: ${mod}"
+      failed=$((failed + 1))
+      ok=1
+    fi
+  done
+
+  echo "  ${failed}/${#imports[@]} import(s) failed"
+  return $ok
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+main() {
+  local quick=false check_mcp=false check_git_details=false
+  VERBOSE=0
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --quick) quick=true; shift ;;
+      --mcp) check_mcp=true; shift ;;
+      --git) check_git_details=true; shift ;;
+      --verbose) VERBOSE=1; shift ;;
+      -h|--help) usage ;;
+      *) shift ;;
+    esac
+  done
+
+  shamel::header "SHAMEL Enhanced Doctor"
+  echo "  Started: $(date '+%Y-%m-%d %H:%M:%S')"
+  echo "  SHAMEL_HOME: ${SHAMEL_HOME}"
+  echo
+
+  local exit_code=0
+  local -a checks=(check::agents check::registry_parity check::rooms check::brain)
+
+  if [[ "$check_mcp" == true ]] && ! $quick; then
+    checks+=(check::mcp)
+  fi
+
+  if [[ "$check_git_details" == true ]] && ! $quick; then
+    checks+=(check::git)
+  fi
+
+  if ! $quick; then
+    checks+=(check::git check::python_imports)
+  fi
+
+  for check in "${checks[@]}"; do
+    if ! $check; then
+      exit_code=1
+    fi
+  done
+
+  echo
+  if [[ $exit_code -eq 0 ]]; then
+    shamel::log "All checks passed"
+  else
+    shamel::error "Some checks failed"
+  fi
+
+  return $exit_code
+}
+
+main "$@"

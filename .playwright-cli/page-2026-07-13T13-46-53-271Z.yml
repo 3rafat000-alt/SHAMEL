@@ -1,0 +1,33 @@
+- generic [ref=f4e2]:
+  - complementary [ref=f4e3]:
+    - generic [ref=f4e6]:
+      - generic [ref=f4e8]: صك
+      - generic [ref=f4e9]: SAKK ADMIN
+    - generic [ref=f4e10]:
+      - paragraph [ref=f4e11]: لوحة التحكم
+      - heading [level=2] [ref=f4e12]: إدارة المحفظة بثقة ووضوح.
+      - paragraph [ref=f4e13]: منصة صكّ للمدفوعات — تحكّم كامل في العمليات والمستخدمين والامتثال من مكان واحد.
+    - generic [ref=f4e14]: © 2026 صك | SAKK
+  - generic [ref=f4e15]:
+    - heading "تسجيل الدخول" [level=1] [ref=f4e16]
+    - paragraph [ref=f4e17]: أدخل بيانات حسابك الإداري للوصول إلى لوحة التحكم.
+    - generic [ref=f4e18]:
+      - generic [ref=f4e19]:
+        - generic [ref=f4e20]: البريد الإلكتروني
+        - textbox "البريد الإلكتروني" [ref=f4e21]:
+          - /placeholder: admin@example.com
+        - paragraph
+      - generic [ref=f4e22]:
+        - generic [ref=f4e23]: كلمة المرور
+        - generic [ref=f4e24]:
+          - textbox "كلمة المرور" [ref=f4e25]:
+            - /placeholder: أدخل كلمة المرور
+          - button "إظهار كلمة المرور" [ref=f4e26] [cursor=pointer]:
+            - img [ref=f4e27]
+        - paragraph
+      - generic [ref=f4e31] [cursor=pointer]:
+        - checkbox "تذكّرني" [ref=f4e32]
+        - generic [ref=f4e33]: تذكّرني
+      - button "تسجيل الدخول" [ref=f4e34] [cursor=pointer]:
+        - generic [ref=f4e35]: تسجيل الدخول
+    - paragraph [ref=f4e36]: © 2026 صك | SAKK — جميع الحقوق محفوظة

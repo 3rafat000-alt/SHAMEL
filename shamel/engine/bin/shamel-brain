@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+# shamel-brain — SHAMEL Brain CLI
+# Usage: shamel-brain <command> [args]
+# Commands: read, write, search, status, decisions, lessons
+set -euo pipefail
+
+source "$(dirname "$0")/shamel-pipeline.sh"
+
+usage() {
+  echo "Usage: $(basename "$0") <command> [args]"
+  echo
+  echo "Commands:"
+  echo "  read <path>          Read brain file (path relative to brain/)"
+  echo "  write <path> <text>  Write content to brain file"
+  echo "  search <query>       Search brain files for text"
+  echo "  status               Show brain status summary"
+  echo "  decisions            Show recent ADRs"
+  echo "  lessons              Show recent lessons"
+  echo
+  echo "Examples:"
+  echo "  shamel-brain read org/DECISIONS.md"
+  echo "  shamel-brain status"
+  echo "  shamel-brain search 'ADR-00'"
+  exit 1
+}
+
+# ── Commands ───────────────────────────────────────────────────────────────────
+cmd_read() {
+  local path="${1:-}"
+  if [[ -z "$path" ]]; then
+    shamel::error "usage: $(basename "$0") read <path>"
+    return 1
+  fi
+  shamel::brain_read "$path"
+}
+
+cmd_write() {
+  local path="${1:-}" content="${2:-}"
+  if [[ -z "$path" ]] || [[ -z "$content" ]]; then
+    shamel::error "usage: $(basename "$0") write <path> <content>"
+    return 1
+  fi
+  shamel::brain_write "$path" "$content"
+}
+
+cmd_search() {
+  local query="${1:-}"
+  if [[ -z "$query" ]]; then
+    shamel::error "usage: $(basename "$0") search <query>"
+    return 1
+  fi
+  shamel::brain_search "$query"
+}
+
+cmd_status() {
+  shamel::header "Brain Status"
+  echo "  Root: ${SHAMEL_BRAIN}"
+
+  # File structure
+  echo
+  shamel::info "Structure"
+  for d in org db templates; do
+    local count
+    if [[ -d "${SHAMEL_BRAIN}/${d}" ]]; then
+      count=$(find "${SHAMEL_BRAIN}/${d}" -type f | wc -l)
+      echo "    ${d}/ → ${count} file(s)"
+    else
+      echo "    ${d}/ → missing"
+    fi
+  done
+
+  # Org brain files
+  echo
+  shamel::info "Org files"
+  for f in DECISIONS.md LESSONS.md EVOLUTION.md PERSONAS.md TEAM_STATUS.md; do
+    local fp="${SHAMEL_BRAIN}/org/${f}"
+    if [[ -f "$fp" ]]; then
+      local lines
+      lines=$(wc -l < "$fp")
+      local modified
+      modified=$(stat -c '%y' "$fp" 2>/dev/null | cut -d. -f1 || echo "?")
+      echo "    ${f} → ${lines} lines (${modified})"
+    else
+      echo "    ${f} → missing"
+    fi
+  done
+
+  # Brain database
+  echo
+  shamel::info "Database"
+  local db="${SHAMEL_BRAIN}/db/brain.db"
+  if [[ -f "$db" ]]; then
+    local size
+    size=$(stat -c '%s' "$db" 2>/dev/null || echo 0)
+    echo "    brain.db → $(numfmt --to=iec "$size" 2>/dev/null || echo "${size}B")"
+  else
+    echo "    brain.db → missing"
+  fi
+
+  # Templates
+  echo
+  shamel::info "Templates"
+  if [[ -d "${SHAMEL_BRAIN}/templates" ]]; then
+    local tmpl_count
+    tmpl_count=$(find "${SHAMEL_BRAIN}/templates" -name '*.md' | wc -l)
+    echo "    ${tmpl_count} template(s)"
+    for tmpl in "${SHAMEL_BRAIN}/templates"/*.md; do
+      local base
+      base=$(basename "$tmpl")
+      echo "      - ${base}"
+    done
+  fi
+
+  # BRAIN.md summary
+  if [[ -f "${SHAMEL_BRAIN}/BRAIN.md" ]]; then
+    echo
+    shamel::info "BRAIN.md"
+    head -5 "${SHAMEL_BRAIN}/BRAIN.md"
+  fi
+}
+
+cmd_decisions() {
+  local limit="${1:-10}"
+  local decisions="${SHAMEL_BRAIN}/org/DECISIONS.md"
+  if [[ ! -f "$decisions" ]]; then
+    shamel::error "DECISIONS.md not found"
+    return 1
+  fi
+
+  shamel::header "Recent Decisions (last ${limit})"
+  # Extract ADR blocks
+  awk -v lim="$limit" '
+    /^## ADR-/ {
+      if (count > 0) printf "\n"
+      count++
+      if (count > lim) next
+    }
+    count > 0 && count <= lim { print }
+  ' "$decisions"
+}
+
+cmd_lessons() {
+  local limit="${1:-10}"
+  local lessons="${SHAMEL_BRAIN}/org/LESSONS.md"
+  if [[ ! -f "$lessons" ]]; then
+    shamel::error "LESSONS.md not found"
+    return 1
+  fi
+
+  shamel::header "Recent Lessons (last ${limit})"
+  awk -v lim="$limit" '
+    /^## LES-/ {
+      count++
+      if (count > lim) next
+    }
+    count > 0 && count <= lim { print }
+  ' "$lessons"
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+main() {
+  local cmd="${1:-}"
+  shift 2>/dev/null || true
+
+  if [[ -z "$cmd" ]] || [[ "$cmd" == "-h" ]] || [[ "$cmd" == "--help" ]]; then
+    usage
+  fi
+
+  case "$cmd" in
+    read|write|search|status|decisions|lessons)
+      "cmd_${cmd}" "$@"
+      ;;
+    *)
+      shamel::error "unknown command: $cmd"
+      usage
+      ;;
+  esac
+}
+
+main "$@"

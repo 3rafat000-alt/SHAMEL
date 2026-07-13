@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+# shamel-agent — SHAMEL agent helper
+# Usage: shamel-agent <agent-name> [action]
+# Actions: show, spawn, tools, room, handoff
+set -euo pipefail
+
+source "$(dirname "$0")/shamel-pipeline.sh"
+
+usage() {
+  echo "Usage: $(basename "$0") <agent-name> [action]"
+  echo
+  echo "Actions:"
+  echo "  show      Display agent info (default)"
+  echo "  spawn     Format RCCF task"
+  echo "  tools     List allowed tools"
+  echo "  room      Show room membership"
+  echo "  handoff   Show handoff chain"
+  echo
+  echo "Examples:"
+  echo "  shamel-agent brd-ceo show"
+  echo "  shamel-agent bck-api-engineer spawn \"build auth endpoint\""
+  echo "  shamel-agent gtw-intake-reformer tools"
+  exit 1
+}
+
+# ── Actions ────────────────────────────────────────────────────────────────────
+cmd_show() {
+  local name="$1"
+  shamel::header "Agent: ${name}"
+
+  if ! shamel::agent_exists "$name"; then
+    shamel::error "agent '${name}' not found at ${SHAMEL_AGENTS}/${name}.md"
+    return 1
+  fi
+
+  local room tools description model
+  room=$(shamel::agent_room "$name")
+  tools=$(shamel::agent_tools "$name" 2>/dev/null || echo "?")
+  description=$(shamel::agent_field "$name" "description" 2>/dev/null || echo "?")
+  model=$(shamel::agent_field "$name" "model" 2>/dev/null || echo "inherit")
+
+  echo "  Name:        ${name}"
+  echo "  Room:        ${room}"
+  echo "  Description: ${description}"
+  echo "  Model:       ${model}"
+  echo "  Tools:       ${tools}"
+
+  local escalation reports_to
+  escalation=$(shamel::agent_field "$name" "escalation" 2>/dev/null || echo "")
+  reports_to=$(shamel::agent_field "$name" "reports_to" 2>/dev/null || echo "")
+  if [[ -n "$escalation" ]] && [[ "$escalation" != "null" ]]; then
+    echo "  Escalation:  ${escalation}"
+  fi
+  if [[ -n "$reports_to" ]] && [[ "$reports_to" != "null" ]]; then
+    echo "  Reports to:  ${reports_to}"
+  fi
+
+  local persona
+  persona=$(shamel::agent_field "$name" "persona_name" 2>/dev/null || echo "")
+  if [[ -n "$persona" ]]; then
+    echo "  Persona:     ${persona}"
+  fi
+}
+
+cmd_spawn() {
+  local name="$1" task="${2:-}"
+  if [[ -z "$task" ]]; then
+    shamel::error "usage: $(basename "$0") ${name} spawn \"<task description>\""
+    return 1
+  fi
+  shamel::rccf_format "$name" "$task"
+}
+
+cmd_tools() {
+  local name="$1"
+  if ! shamel::agent_exists "$name"; then
+    shamel::error "agent '${name}' not found"
+    return 1
+  fi
+  local tools
+  tools=$(shamel::agent_tools "$name" 2>/dev/null || echo "Read Edit Write Bash Grep")
+  # Also check if web is enabled
+  local web
+  web=$(shamel::agent_field "$name" "web" 2>/dev/null || echo "false")
+  echo "${tools}"
+  if [[ "$web" == "true" ]]; then
+    echo "(web access enabled)"
+  fi
+}
+
+cmd_room() {
+  local name="$1"
+  if ! shamel::agent_exists "$name"; then
+    shamel::error "agent '${name}' not found"
+    return 1
+  fi
+  local room
+  room=$(shamel::agent_room "$name")
+  echo "${room}"
+
+  # List room agents
+  if [[ "$room" != "unknown" ]]; then
+    echo "---"
+    shamel::room_agents "$room" 2>/dev/null || true
+  fi
+}
+
+cmd_handoff() {
+  local name="$1"
+  if ! shamel::agent_exists "$name"; then
+    shamel::error "agent '${name}' not found"
+    return 1
+  fi
+
+  shamel::header "Handoff chain: ${name}"
+
+  local -a chain=()
+  while IFS= read -r agent; do
+    chain+=("$agent")
+  done < <(shamel::handoff_chain "$name")
+
+  local len=${#chain[@]}
+  for i in "${!chain[@]}"; do
+    local bullet="·"
+    if [[ $i -eq 0 ]]; then bullet="►"; fi
+    if [[ $i -eq $((len - 1)) ]]; then bullet="★"; fi
+
+    local agent_name="${chain[$i]}"
+    local agent_room
+    agent_room=$(shamel::agent_room "$agent_name" 2>/dev/null || echo "")
+    printf "  %s %s" "$bullet" "$agent_name"
+    if [[ -n "$agent_room" ]]; then
+      printf " (%s)" "$agent_room"
+    fi
+    # Mark if it's a room lead
+    local role
+    role=$(shamel::agent_field "$agent_name" "authority" 2>/dev/null || echo "")
+    echo ""
+  done
+
+  echo
+  if [[ $len -gt 0 ]]; then
+    echo "  ► = agent  ·  ★ = top"
+    echo "  Handoff rule: agent → room lead → CEO → user"
+  fi
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+main() {
+  local agent_name="${1:-}"
+  local action="${2:-show}"
+
+  if [[ -z "$agent_name" ]] || [[ "$agent_name" == "-h" ]] || [[ "$agent_name" == "--help" ]]; then
+    usage
+  fi
+
+  case "$action" in
+    show|spawn|tools|room|handoff)
+      "cmd_${action}" "$agent_name" "${3:-}"
+      ;;
+    *)
+      shamel::error "unknown action: $action"
+      usage
+      ;;
+  esac
+}
+
+main "$@"

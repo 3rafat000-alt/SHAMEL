@@ -1,0 +1,341 @@
+- generic [active] [ref=f2e1]:
+  - link "تخطي إلى المحتوى الرئيسي" [ref=f2e2] [cursor=pointer]:
+    - /url: "#mainContent"
+  - generic [ref=f2e3]:
+    - complementary [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - link "صكك صكك لوحة الإدارة" [ref=f2e7] [cursor=pointer]:
+          - /url: http://sakk.local/admin
+          - img "صكك" [ref=f2e9]
+          - generic [ref=f2e10]:
+            - generic [ref=f2e11]: صكك
+            - generic [ref=f2e12]: لوحة الإدارة
+        - navigation "القائمة الرئيسية" [ref=f2e13]:
+          - paragraph [ref=f2e14]: الرئيسية
+          - link "لوحة التحكم" [ref=f2e15] [cursor=pointer]:
+            - /url: http://sakk.local/admin
+            - img [ref=f2e16]
+            - generic [ref=f2e18]: لوحة التحكم
+          - paragraph [ref=f2e19]: المالية
+          - link "المعاملات" [ref=f2e20] [cursor=pointer]:
+            - /url: http://sakk.local/admin/transactions
+            - img [ref=f2e21]
+            - generic [ref=f2e23]: المعاملات
+          - link "طلبات السحب" [ref=f2e24] [cursor=pointer]:
+            - /url: http://sakk.local/admin/withdrawals
+            - img [ref=f2e25]
+            - generic [ref=f2e27]: طلبات السحب
+          - link "الرسوم" [ref=f2e28] [cursor=pointer]:
+            - /url: http://sakk.local/admin/fees
+            - img [ref=f2e29]
+            - generic [ref=f2e31]: الرسوم
+          - link "أسعار الصرف" [ref=f2e32] [cursor=pointer]:
+            - /url: http://sakk.local/admin/exchange-rates
+            - img [ref=f2e33]
+            - generic [ref=f2e35]: أسعار الصرف
+          - link "الذهب" [ref=f2e36] [cursor=pointer]:
+            - /url: http://sakk.local/admin/gold
+            - img [ref=f2e37]
+            - generic [ref=f2e39]: الذهب
+          - paragraph [ref=f2e40]: شركاء الأعمال
+          - button "الوكلاء" [ref=f2e42] [cursor=pointer]:
+            - img [ref=f2e43]
+            - generic [ref=f2e45]: الوكلاء
+            - img [ref=f2e46]
+          - button "التجار" [ref=f2e49] [cursor=pointer]:
+            - img [ref=f2e50]
+            - generic [ref=f2e52]: التجار
+            - img [ref=f2e53]
+          - button "الشركات" [ref=f2e56] [cursor=pointer]:
+            - img [ref=f2e57]
+            - generic [ref=f2e59]: الشركات
+            - img [ref=f2e60]
+          - button "المستخدمون" [ref=f2e63] [cursor=pointer]:
+            - img [ref=f2e64]
+            - generic [ref=f2e66]: المستخدمون
+            - img [ref=f2e67]
+          - paragraph [ref=f2e69]: الدعم
+          - link "تذاكر الدعم" [ref=f2e70] [cursor=pointer]:
+            - /url: http://sakk.local/admin/support
+            - img [ref=f2e71]
+            - generic [ref=f2e73]: تذاكر الدعم
+          - link "الدردشة الحية" [ref=f2e74] [cursor=pointer]:
+            - /url: http://sakk.local/admin/chat
+            - img [ref=f2e75]
+            - generic [ref=f2e77]: الدردشة الحية
+          - link "الإشعارات والتسويق" [ref=f2e78] [cursor=pointer]:
+            - /url: http://sakk.local/admin/notifications
+            - img [ref=f2e79]
+            - generic [ref=f2e81]: الإشعارات والتسويق
+          - paragraph [ref=f2e82]: النظام
+          - link "التكاملات" [ref=f2e83] [cursor=pointer]:
+            - /url: http://sakk.local/admin/integrations
+            - img [ref=f2e84]
+            - generic [ref=f2e86]: التكاملات
+          - button "إعدادات النظام" [ref=f2e88] [cursor=pointer]:
+            - img [ref=f2e89]
+            - generic [ref=f2e91]: إعدادات النظام
+            - img [ref=f2e92]
+          - link "سجل النشاطات" [ref=f2e94] [cursor=pointer]:
+            - /url: http://sakk.local/admin/audit
+            - img [ref=f2e95]
+            - generic [ref=f2e97]: سجل النشاطات
+          - link "الإعدادات" [ref=f2e98] [cursor=pointer]:
+            - /url: http://sakk.local/admin/settings
+            - img [ref=f2e99]
+            - generic [ref=f2e102]: الإعدادات
+        - generic [ref=f2e103]:
+          - link "ما مدير النظام مدير النظام" [ref=f2e104] [cursor=pointer]:
+            - /url: http://sakk.local/admin/profile
+            - generic [ref=f2e105]: ما
+            - generic [ref=f2e106]:
+              - generic [ref=f2e107]: مدير النظام
+              - generic [ref=f2e108]: مدير النظام
+          - button "تسجيل الخروج" [ref=f2e110] [cursor=pointer]:
+            - img [ref=f2e111]
+    - main [ref=f2e113]:
+      - navigation [ref=f2e114]:
+        - generic [ref=f2e115]:
+          - button "تبديل القائمة" [ref=f2e116] [cursor=pointer]:
+            - img [ref=f2e117]
+          - generic [ref=f2e119]:
+            - generic [ref=f2e120]: لوحة التحكم
+            - navigation "مسار الصفحة" [ref=f2e121]:
+              - link "الرئيسية" [ref=f2e122] [cursor=pointer]:
+                - /url: http://sakk.local/admin
+              - generic [ref=f2e123]: /
+              - generic [ref=f2e124]: نظرة عامة
+        - search "فتح البحث السريع" [ref=f2e126]:
+          - img [ref=f2e127]
+          - generic [ref=f2e129]: بحث في كل شيء…
+          - generic [ref=f2e130]: ⌘K
+        - generic [ref=f2e131]:
+          - link "المعاملات" [ref=f2e133] [cursor=pointer]:
+            - /url: http://sakk.local/admin/transactions
+            - img [ref=f2e134]
+            - text: المعاملات
+          - button "الإشعارات" [ref=f2e138] [cursor=pointer]:
+            - img [ref=f2e139]
+          - button "اختصارات لوحة المفاتيح" [ref=f2e141] [cursor=pointer]:
+            - img [ref=f2e142]
+      - generic [ref=f2e146]:
+        - region "شريط الحالة" [ref=f2e147]:
+          - generic [ref=f2e148]:
+            - paragraph [ref=f2e149]:
+              - text: نهارك سعيد،
+              - strong [ref=f2e150]: مدير
+            - paragraph [ref=f2e151]: نظرة اليوم على المنصة · الإثنين، 13 يوليو 2026 — 13:46
+          - generic [ref=f2e152]:
+            - generic [ref=f2e153]:
+              - link "0 طلبات توثيق" [ref=f2e154] [cursor=pointer]:
+                - /url: "#decision-queue"
+              - link "0 سحوبات" [ref=f2e155] [cursor=pointer]:
+                - /url: "#decision-queue"
+              - link "0 تذاكر دعم" [ref=f2e156] [cursor=pointer]:
+                - /url: "#decision-queue"
+            - group "اختصارات" [ref=f2e157]:
+              - link "المستخدمون" [ref=f2e158] [cursor=pointer]:
+                - /url: http://sakk.local/admin/users
+                - img [ref=f2e159]
+              - link "السحوبات" [ref=f2e161] [cursor=pointer]:
+                - /url: http://sakk.local/admin/withdrawals
+                - img [ref=f2e162]
+              - link "أسعار الذهب" [ref=f2e164] [cursor=pointer]:
+                - /url: http://sakk.local/admin/gold/prices
+                - img [ref=f2e165]
+              - link "تذاكر الدعم" [ref=f2e167] [cursor=pointer]:
+                - /url: http://sakk.local/admin/support
+                - img [ref=f2e168]
+              - link "تصدير" [ref=f2e170] [cursor=pointer]:
+                - /url: http://sakk.local/admin/transactions?export=csv
+                - img [ref=f2e171]
+              - link "الوكلاء" [ref=f2e173] [cursor=pointer]:
+                - /url: http://sakk.local/admin/agents
+                - img [ref=f2e174]
+              - link "الإعدادات" [ref=f2e176] [cursor=pointer]:
+                - /url: http://sakk.local/admin/settings
+                - img [ref=f2e177]
+        - generic [ref=f2e180]:
+          - region "ما ينتظر قرارك" [ref=f2e181]:
+            - generic [ref=f2e182]:
+              - generic [ref=f2e184]:
+                - text: أولوية القرار
+                - heading "ما ينتظر قرارك" [level=2] [ref=f2e185]
+              - paragraph [ref=f2e186]: كل ما بانتظار إجراء، في مكان واحد — الأقدم أولاً بغض النظر عن نوعه
+            - generic [ref=f2e188]:
+              - img [ref=f2e189]
+              - strong [ref=f2e191]: لا شيء بانتظارك
+              - text: لا توجد طلبات توثيق أو سحوبات أو تذاكر دعم تحتاج مراجعة الآن
+          - region "النبض المالي" [ref=f2e192]:
+            - generic [ref=f2e193]:
+              - text: هل المال بأمان الآن
+              - heading "النبض المالي" [level=2] [ref=f2e194]
+            - generic [ref=f2e195]:
+              - generic [ref=f2e196]:
+                - generic [ref=f2e197]:
+                  - img [ref=f2e200]
+                  - button "إخفاء الأرصدة" [ref=f2e202]:
+                    - img [ref=f2e203]
+                - text: سيولة المنصة
+                - paragraph [ref=f2e206]: إجمالي الأرصدة بالدولار والليرة عبر كل المحافظ
+                - generic [ref=f2e207]:
+                  - generic [ref=f2e208]: $25,145
+                  - generic [ref=f2e209]: ⁦ل.س 22,219,675⁩
+                  - text: سعر الصرف · ل.س 130
+              - generic [ref=f2e210]:
+                - generic [ref=f2e211]:
+                  - img [ref=f2e213]
+                  - generic [ref=f2e215]:
+                    - img [ref=f2e216]
+                    - text: 116.1%
+                - text: الإيرادات
+                - generic [ref=f2e218]: $12
+                - paragraph [ref=f2e219]: "اليوم · الإجمالي: ⁦$633⁩"
+              - generic [ref=f2e220]:
+                - generic [ref=f2e221]: فرق الصرف · دولار ⁦$3⁩
+                - generic [ref=f2e222]: فرق الصرف · ليرة ⁦ل.س 325⁩
+                - generic [ref=f2e223]: حجم التداول ⁦$4,909,879⁩
+                - generic [ref=f2e224]: سعر الصرف ل.س 130
+            - paragraph [ref=f2e225]:
+              - img [ref=f2e226]
+              - text: المؤشرات أعلاه لحظية — السلاسل الزمنية الحقيقية الوحيدة معروضة في «نشاط هذا الأسبوع» أدناه
+          - region "نشاط هذا الأسبوع" [ref=f2e228]:
+            - generic [ref=f2e229]:
+              - text: الاتجاه
+              - heading "نشاط هذا الأسبوع" [level=2] [ref=f2e230]
+            - generic [ref=f2e232]:
+              - generic [ref=f2e233]:
+                - tablist "اختر السلسلة الزمنية" [ref=f2e234]:
+                  - tab "المستخدمون" [ref=f2e235] [cursor=pointer]
+                  - tab "المعاملات" [selected] [ref=f2e236] [cursor=pointer]
+                  - tab "الإيرادات" [ref=f2e237] [cursor=pointer]
+                - generic [ref=f2e238]:
+                  - img [ref=f2e239]
+                  - text: 863.6% ارتفاع أسبوعياً
+              - tabpanel "المعاملات" [ref=f2e241]:
+                - 'img "رسم بياني خطي لـ المعاملات خلال آخر 7 أيام. آخر يوم: 8 معاملة. 863.6% ارتفاع أسبوعياً" [ref=f2e243]'
+              - list [ref=f2e244]:
+                - listitem [ref=f2e245]: "ملخص المعاملات — آخر 7 أيام:"
+                - listitem [ref=f2e246]: "الثلاثاء: 4 معاملة"
+                - listitem [ref=f2e247]: "الأربعاء: 6 معاملة"
+                - listitem [ref=f2e248]: "الخميس: 8 معاملة"
+                - listitem [ref=f2e249]: "الجمعة: 12 معاملة"
+                - listitem [ref=f2e250]: "السبت: 15 معاملة"
+                - listitem [ref=f2e251]: "الأحد: 51 معاملة"
+                - listitem [ref=f2e252]: "الإثنين: 8 معاملة"
+          - region "إحصائيات المنصة" [ref=f2e253]:
+            - generic [ref=f2e254]:
+              - text: من على المنصة
+              - heading "إحصائيات المنصة" [level=2] [ref=f2e255]
+            - generic [ref=f2e256]:
+              - generic [ref=f2e257]:
+                - generic [ref=f2e258]:
+                  - img [ref=f2e260]
+                  - text: 10 التجار
+                - generic [ref=f2e262]:
+                  - img [ref=f2e264]
+                  - text: 12 الوكلاء
+                - generic [ref=f2e266]:
+                  - img [ref=f2e268]
+                  - text: 8 الشركات
+              - generic [ref=f2e271]:
+                - generic [ref=f2e272]:
+                  - generic [ref=f2e274]:
+                    - img [ref=f2e275]
+                    - generic [ref=f2e277]: طابور التوثيق
+                  - generic [ref=f2e278]: 3 بانتظار المراجعة
+                - generic [ref=f2e280]:
+                  - link "شركات بانتظار التوثيق 1" [ref=f2e281] [cursor=pointer]:
+                    - /url: http://sakk.local/admin/companies?status=pending
+                    - img [ref=f2e283]
+                    - text: شركات بانتظار التوثيق 1
+                  - link "تجار بانتظار التوثيق 1" [ref=f2e285] [cursor=pointer]:
+                    - /url: http://sakk.local/admin/merchants
+                    - img [ref=f2e287]
+                    - text: تجار بانتظار التوثيق 1
+                  - link "وكلاء بانتظار التوثيق 1" [ref=f2e289] [cursor=pointer]:
+                    - /url: http://sakk.local/admin/agents?kyc_status=pending
+                    - img [ref=f2e291]
+                    - text: وكلاء بانتظار التوثيق 1
+          - region "آخر النشاطات" [ref=f2e293]:
+            - generic [ref=f2e294]:
+              - text: السجل
+              - heading "آخر النشاطات" [level=2] [ref=f2e295]
+            - generic [ref=f2e296]:
+              - generic [ref=f2e297]:
+                - tablist "عرض المعاملات" [ref=f2e298]:
+                  - tab "أحدث المعاملات" [selected] [ref=f2e299] [cursor=pointer]
+                  - tab "معاملات كبيرة" [ref=f2e300] [cursor=pointer]
+                - button "عرض كل المعاملات" [ref=f2e302] [cursor=pointer]:
+                  - generic [ref=f2e303]: عرض كل المعاملات
+              - grid "سجل المعاملات" [ref=f2e305]:
+                - caption [ref=f2e306]: سجل المعاملات — أحدث المعاملات ومعاملات كبيرة القيمة
+                - rowgroup [ref=f2e307]:
+                  - row "المستخدم المبلغ النوع الحالة الوقت" [ref=f2e308]:
+                    - columnheader "المستخدم" [ref=f2e309]
+                    - columnheader "المبلغ" [ref=f2e310]
+                    - columnheader "النوع" [ref=f2e311]
+                    - columnheader "الحالة" [ref=f2e312]
+                    - columnheader "الوقت" [ref=f2e313]
+                - rowgroup [ref=f2e314]:
+                  - row "مدير النظام ⁦$906.95⁩ إيداع ناجحة 2026/07/13 · 11:33" [ref=f2e315]:
+                    - gridcell "مدير النظام" [ref=f2e316]
+                    - gridcell "⁦$906.95⁩" [ref=f2e317]
+                    - gridcell "إيداع" [ref=f2e318]
+                    - gridcell "ناجحة" [ref=f2e319]:
+                      - generic [ref=f2e320]: ناجحة
+                    - gridcell "2026/07/13 · 11:33" [ref=f2e321]
+                  - row "مدير النظام ⁦$618.94⁩ تعديل ناجحة 2026/07/13 · 11:31" [ref=f2e322]:
+                    - gridcell "مدير النظام" [ref=f2e323]
+                    - gridcell "⁦$618.94⁩" [ref=f2e324]
+                    - gridcell "تعديل" [ref=f2e325]
+                    - gridcell "ناجحة" [ref=f2e326]:
+                      - generic [ref=f2e327]: ناجحة
+                    - gridcell "2026/07/13 · 11:31" [ref=f2e328]
+                  - row "Stripe Test ⁦EUR 100⁩ تفريغ البطاقة ناجحة 2026/07/13 · 01:06" [ref=f2e329]:
+                    - gridcell "Stripe Test" [ref=f2e330]
+                    - gridcell "⁦EUR 100⁩" [ref=f2e331]
+                    - gridcell "تفريغ البطاقة" [ref=f2e332]
+                    - gridcell "ناجحة" [ref=f2e333]:
+                      - generic [ref=f2e334]: ناجحة
+                    - gridcell "2026/07/13 · 01:06" [ref=f2e335]
+                  - row "Stripe Test ⁦EUR 100⁩ شحن البطاقة ناجحة 2026/07/13 · 01:06" [ref=f2e336]:
+                    - gridcell "Stripe Test" [ref=f2e337]
+                    - gridcell "⁦EUR 100⁩" [ref=f2e338]
+                    - gridcell "شحن البطاقة" [ref=f2e339]
+                    - gridcell "ناجحة" [ref=f2e340]:
+                      - generic [ref=f2e341]: ناجحة
+                    - gridcell "2026/07/13 · 01:06" [ref=f2e342]
+                  - row "Stripe Test ⁦EUR 100⁩ تفريغ البطاقة ناجحة 2026/07/13 · 00:38" [ref=f2e343]:
+                    - gridcell "Stripe Test" [ref=f2e344]
+                    - gridcell "⁦EUR 100⁩" [ref=f2e345]
+                    - gridcell "تفريغ البطاقة" [ref=f2e346]
+                    - gridcell "ناجحة" [ref=f2e347]:
+                      - generic [ref=f2e348]: ناجحة
+                    - gridcell "2026/07/13 · 00:38" [ref=f2e349]
+                  - row "Stripe Test ⁦EUR 100⁩ شحن البطاقة ناجحة 2026/07/13 · 00:38" [ref=f2e350]:
+                    - gridcell "Stripe Test" [ref=f2e351]
+                    - gridcell "⁦EUR 100⁩" [ref=f2e352]
+                    - gridcell "شحن البطاقة" [ref=f2e353]
+                    - gridcell "ناجحة" [ref=f2e354]:
+                      - generic [ref=f2e355]: ناجحة
+                    - gridcell "2026/07/13 · 00:38" [ref=f2e356]
+                  - row "Stripe Test ⁦EUR 100⁩ تفريغ البطاقة ناجحة 2026/07/13 · 00:28" [ref=f2e357]:
+                    - gridcell "Stripe Test" [ref=f2e358]
+                    - gridcell "⁦EUR 100⁩" [ref=f2e359]
+                    - gridcell "تفريغ البطاقة" [ref=f2e360]
+                    - gridcell "ناجحة" [ref=f2e361]:
+                      - generic [ref=f2e362]: ناجحة
+                    - gridcell "2026/07/13 · 00:28" [ref=f2e363]
+                  - row "Stripe Test ⁦EUR 100⁩ شحن البطاقة ناجحة 2026/07/13 · 00:28" [ref=f2e364]:
+                    - gridcell "Stripe Test" [ref=f2e365]
+                    - gridcell "⁦EUR 100⁩" [ref=f2e366]
+                    - gridcell "شحن البطاقة" [ref=f2e367]
+                    - gridcell "ناجحة" [ref=f2e368]:
+                      - generic [ref=f2e369]: ناجحة
+                    - gridcell "2026/07/13 · 00:28" [ref=f2e370]
+      - paragraph [ref=f2e372]:
+        - text: © 2026 صَكّ — جميع الحقوق المحفوظة · الإصدار 1.0.0 ·
+        - link "الدعم الفني" [ref=f2e373] [cursor=pointer]:
+          - /url: http://sakk.local/admin/system/support
+        - text: · بتقنية Lorka AI
