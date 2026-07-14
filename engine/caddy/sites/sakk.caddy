@@ -1,0 +1,141 @@
+# SAKK Wallet — Caddy site configuration
+#
+# Public: sakk.zanjour.com, reached via the Cloudflare Tunnel (cloudflared,
+#   system-managed, dashboard ingress: sakk.zanjour.com -> http://localhost:80).
+#   The tunnel does NOT preserve the original Host header — Caddy sees
+#   "Host: localhost" for every tunneled request. The real hostname travels
+#   in X-Forwarded-Host instead, so the `:80` catch-all block below matches
+#   on that header and rewrites Host back to sakk.zanjour.com before handing
+#   off to PHP (so Laravel's url()/asset() generation and the CSP's
+#   script-src 'self' resolve correctly instead of pointing at "localhost").
+#   FIX 2026-07-14: this catch-all block was dropped when this file was
+#   split out during the Phase 8 SHAMEL restructuring (the previous,
+#   correct version lives at shamel/engine/caddy/sites/PRJ-SAKK.caddy) —
+#   every tunneled request silently hit no matching site block and got a
+#   caddy-internal NOP/empty-200 response. Restored here.
+# LAN: sakk.local (admin only) — direct access, matches on the literal Host.
+#
+# NOTE on `route { }` wrapping below: bare top-level directives (rewrite,
+# handle, file_server, reverse_proxy...) are silently reordered by Caddy's
+# built-in directive-priority table, NOT executed in file order — `rewrite`
+# ranks ahead of a plain `handle` block, so an unwrapped admin-guard
+# `handle` here would run AFTER the request URI was already rewritten to
+# /index.php, and `path /api/v1/admin/*` would never match again. Wrapping
+# the guard + rewrite + php_fastcgi in an explicit `route { }` forces literal
+# file-order execution instead, so the 404 guard actually runs first.
+
+(common_headers) {
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		X-XSS-Protection "1; mode=block"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(self), camera=(), microphone=(), payment=()"
+		-Server
+	}
+}
+
+# ── sakk.local (LAN only — admin panel, direct Host match) ──────────────────
+sakk.local:80 {
+	import common_headers
+
+	root * /home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public
+	file_server
+
+	@not_static {
+		not file
+	}
+	rewrite @not_static /index.php
+	php_fastcgi unix//run/php/sofi.sock {
+		env APP_ENV production
+		env APP_DEBUG false
+	}
+
+	log {
+		output file /var/log/caddy/sakk-local.log
+		level ERROR
+	}
+}
+
+# ── sakk.zanjour.com, direct (bypassing the tunnel — e.g. local testing) ────
+sakk.zanjour.com:80 {
+	import common_headers
+
+	root * /home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public
+	file_server
+
+	route {
+		# Admin web: 404 for public
+		@admin_web path /admin/*
+		handle @admin_web {
+			respond 404
+		}
+
+		# Admin API: 404 for public
+		@admin_api path /api/v1/admin/*
+		handle @admin_api {
+			respond 404
+		}
+
+		@not_static_direct {
+			not file
+		}
+		rewrite @not_static_direct /index.php
+		php_fastcgi unix//run/php/sofi.sock {
+			env APP_ENV production
+			env APP_DEBUG false
+		}
+	}
+
+	log {
+		output file /var/log/caddy/sakk-zanjour.log
+		level ERROR
+	}
+}
+
+# ── sakk.zanjour.com via the Cloudflare Tunnel — Host arrives as "localhost" ─
+:80 {
+	@sakk_via_tunnel header X-Forwarded-Host sakk.zanjour.com
+	handle @sakk_via_tunnel {
+		request_header Host sakk.zanjour.com
+		import common_headers
+
+		root * /home/es3dlll/Desktop/SHAMEL/projects/PRJ-SAKK/backend/public
+		file_server
+
+		route {
+			# Admin web: 404 for public
+			@admin_web path /admin/*
+			handle @admin_web {
+				respond 404
+			}
+
+			# Admin API: 404 for public
+			@admin_api path /api/v1/admin/*
+			handle @admin_api {
+				respond 404
+			}
+
+			@not_static_tunnel {
+				not file
+			}
+			rewrite @not_static_tunnel /index.php
+			# Cloudflare already terminated real HTTPS for the client before this
+			# request reached us over plain HTTP — assert that to PHP directly
+			# (the nginx-standard `fastcgi_param HTTPS on` idiom) rather than
+			# expanding Laravel's TrustProxies header trust, which is deliberately
+			# scoped narrow (see backend/bootstrap/app.php) for reasons unrelated
+			# to this.
+			php_fastcgi unix//run/php/sofi.sock {
+				env APP_ENV production
+				env APP_DEBUG false
+				env HTTPS on
+			}
+		}
+	}
+
+	log {
+		output file /var/log/caddy/sakk-zanjour.log
+		level ERROR
+	}
+}
