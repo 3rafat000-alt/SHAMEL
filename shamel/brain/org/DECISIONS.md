@@ -133,6 +133,15 @@ generated: false
 
 ---
 
+## ADR-015: Elastic Pipeline Directive — Issued as CEO Operational Directive, Not a Constitutional Article
+**Date:** 2026-07-14
+**Status:** ACTIVE
+**Decision:** A tiered work-order ceremony classifier (TRIVIAL/SMALL/STANDARD/LARGE, single-highest-trigger, with a fixed security-trigger list and two hard gates GATE-A/GATE-B inside the existing Law-1 pipeline) is adopted as `shamel/core/directives/elastic-pipeline.md`, cross-referenced from `PROTOCOLS.md` P-01.10. It was first drafted as `constitution/12-elastic-pipeline.md`, styled as a 13th Constitutional Article and citing `P-01.8` as its authority. On review, that framing was rejected: `CONSTITUTION.md`'s own "Twelve Articles" table (00–11) was never updated to list it, and its actual scope (a standing, blanket rule applied to every future work order) is broader than `P-01.8`'s narrow, per-instance, CORTEX-logged gate-1-3 collapse — the Amendment Process (`CONSTITUTION.md` §Amendment Process: ADR + boardroom review + 3/4 vote) would properly govern a real 13th Article, not a unilateral CEO citation. The file was moved out of `constitution/` into a new `directives/` path, reframed explicitly as a CEO Operational Directive (not an Article, not in the Twelve Articles table, revocable by brd-ceo alone), and logged here as this ADR — the same documentation weight `P-01.8` itself requires per-instance, applied once at the directive's adoption rather than per-use.
+**Rationale:** Preserves the substantive content (it doesn't conflict with any Teaching or Article) while fixing a real structural inconsistency: a document cannot claim constitutional-article status that the constitution itself doesn't recognize. Reframing as a directive is faster than a full Amendment vote and is honest about the narrower authority actually being exercised.
+**Outcome:** `constitution/` directory contains only Articles 00–11 (matches the Twelve Articles table exactly). `directives/elastic-pipeline.md` carries the tier/gate rules. `PROTOCOLS.md` P-01.10 cross-references the new path and ADR number.
+
+---
+
 ## Future ADRs (Backlog)
 - **ADR-012:** Sidecar observability (Sentry → DECISIONS.md feedback loop) — Gate 8 integration
 - **ADR-013:** Parallel squad orchestration v2 — Dynamic resource binding + auto-cleanup

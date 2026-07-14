@@ -1,14 +1,16 @@
-# Article 12 — Elastic Pipeline (tiered ceremony within the mandatory flow)
+# CEO Operational Directive — Elastic Pipeline (tiered ceremony within the mandatory flow)
+
+**Status: Operational Directive, NOT a Constitutional Article.** This file does not appear in CONSTITUTION.md's "Twelve Articles" table and is not one of Articles 00–11. It carries no article number, does not require the Amendment Process (`CONSTITUTION.md` §Amendment Process), and can be revised or revoked by brd-ceo alone, logged as an ADR in `brain/org/DECISIONS.md` — the same weight class as `P-01.8` (Fast-track bypass), just scoped to ceremony-density instead of gate-collapse. Reference: ADR-015.
 
 Foundation: serves Teaching II (Hierarchical Flow) and Teaching IV (Token Economy). Read `core/CONSTITUTION.md`, `01-work-order.md`, and `10-lifecycle-gates.md` first.
 
 ## Authority
 
-This article is an operational elaboration issued under CEO authority (CEO Covenant §7 — "I build the system that builds the product"; Article 01 Command field — effort class), the same authority that already lets brd-ceo authorize Fast-Track gate collapse under `P-01.8`. It is **not** a Constitutional Amendment — it does not touch the Seven Teachings, the fixed pipeline of Law 1, or any of Articles 00–11. It answers a narrower question those articles leave open: *how much scaffolding does a given work order need between the fixed checkpoints?*
+This directive is issued under the CEO's existing standing authority to scale procedure without a boardroom vote (CEO Covenant item 7 — "I build the system that builds the product"; the same class of authority that already lets brd-ceo authorize Fast-Track gate collapse under `P-01.8`, though this directive is broader in scope than P-01.8 and is therefore logged separately as ADR-015 rather than a one-off P-01.8 authorization). It changes **nothing** in `CONSTITUTION.md` — not the Seven Teachings, not the fixed pipeline of Law 1, not Articles 00–11, and not the Twelve Articles table. It answers a narrower operational question those articles leave open: *how much scaffolding does a given work order need between the fixed checkpoints?* If this directive is ever found to conflict with any Article or Teaching, the Article/Teaching prevails and this directive is void in that case until revised (same override rule CONSTITUTION.md applies to Articles, applied here one level down).
 
 ## The problem this solves
 
-Article 01 mandates an RCCF Work Order for every spawn. Article 10 mandates 9 lifecycle gates. Neither states how much ceremony a one-line config fix needs versus a new payment integration — both would otherwise default to the same weight, which either starves large work of rigor or drowns small work in process (a Teaching IV violation). This article supplies a size/density classifier that scales ceremony without ever touching the checkpoint sequence itself.
+Article 01 mandates an RCCF Work Order for every spawn. Article 10 mandates 9 lifecycle gates. Neither states how much ceremony a one-line config fix needs versus a new payment integration — both would otherwise default to the same weight, which either starves large work of rigor or drowns small work in process (a Teaching IV violation). This directive supplies a size/density classifier that scales ceremony without ever touching the checkpoint sequence itself.
 
 ## The four tiers
 
@@ -53,7 +55,7 @@ Both gates sit **inside** the existing mandatory pipeline of Law 1 (`gtw-intake-
 
 **GATE-B — before CEO hands off.** Sits after agents' work returns to the room lead and before brd-ceo hands off to the user (or before any commit crosses into a shared branch, per Article 06). Bar: Article 03 evidence block present, the tier's required ceremony is complete, and — for LARGE — the adversarial second-check of Protocol 02 has run.
 
-## What this article does not do
+## What this directive does not do
 
 - Does not create a third path around brd-ceo or a room lead.
 - Does not let a Lead self-classify LARGE work down to skip sec-room.
