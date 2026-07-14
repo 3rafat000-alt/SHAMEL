@@ -58,6 +58,7 @@ SHAMEL brain = 6 regions + working state:
 | `brain/org/PERSONAS.md` | خريطة الشخصيات (وكيل ← شخصية) | knw-lead |
 | `brain/org/HANDOFFS.md` | فهرس التسليم بين الغرف | النظام تلقائياً |
 | `brain/org/TEAM_STATUS.md` | حالة الفريق (مُولد) | النظام تلقائياً |
+| `brain/INSTINCTS.md` | طبقة تسجيل الثقة والترقية فوق CORTEX — غرائز project→global scoped | knw-lead + knw-memory-curator |
 
 ### Region 3 — THALAMUS (Routing)
 | الملف | الوصف | يكتبه |
@@ -94,7 +95,7 @@ SHAMEL brain = 6 regions + working state:
 ## | قواعد الذاكرة (Memory Rules)
 
 1. **HIPPOCAMPUS = مؤقت:** يمسح في بداية كل جلسة. المحتوى المهم يُنقل إلى CORTEX
-2. **CORTEX = دائم:** كل قرار معماري أو درس يضاف到这里 — لا يحذف أبداً
+2. **CORTEX = دائم:** كل قرار معماري أو درس يضاف هنا — لا يحذف أبداً. الغرائز عالية الثقة تُصنَّف عبر `brain/INSTINCTS.md`
 3. **THALAMUS = ثابت:** يتغير فقط عندما يتغير هيكل التوجيه نفسه
 4. **AMYGDALA = يقظ:** يراقب باستمرار، يُصعّد عند الخطر، يُنظف التنبيهات المغلقة بعد 7 أيام
 5. **PREFRONTAL = استراتيجي:** يُراجع أسبوعياً، يُحدث مع كل قرار مهم أو درس جديد

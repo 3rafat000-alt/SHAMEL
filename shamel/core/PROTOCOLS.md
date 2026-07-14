@@ -21,6 +21,7 @@ Enforce the mandatory pipeline flow from user input to final delivery. No agent,
 7. **P-01.7 — Pipeline timeout.** Each pipeline stage has a maximum duration (defined in `shamel/core/nexus/routing.yaml`). Timeout → auto-escalation to brd-ceo.
 8. **P-01.8 — Fast-track bypass.** Only brd-ceo may authorize fast-track (gates 1-3 collapse for low-risk changes). Authorization must be documented in CORTEX. Unauthorized fast-track → Level 3.
 9. **P-01.9 — Pipeline evidence chain.** Every pipeline transition produces: `[from → to] [evidence id] [timestamp] [artifacts]`. Chain maintained by receiving agent. Broken chain → Level 2.
+10. **P-01.10 — Elastic ceremony tiers.** Ceremony density between fixed pipeline checkpoints scales by work-order tier (TRIVIAL/SMALL/STANDARD/LARGE, single-highest-trigger classification) per `core/constitution/12-elastic-pipeline.md`; security-trigger domains (auth, DB/migrations, external API/webhook, crypto/secrets, payment flows) force LARGE regardless of file count. Tiers govern scaffolding inside the Law-1 flow only — they never skip, add, or reorder a checkpoint. Full tier definitions and the two hard gates (GATE-A, GATE-B) live in Article 12, not here.
 
 ### Violation consequence
 Level 1–3 depending on severity. Pipeline bypass → Level 3 minimum. Repeat (2×) → Level 4.
@@ -42,6 +43,7 @@ Define strict rules for task handoff between agents and rooms. Ensure no work is
 7. **P-02.7 — Room boundary enforcement.** Cross-room handoff MUST go through both room Leads. Direct agent-to-agent cross-room handoff → Level 3.
 8. **P-02.8 — Handoff timeout.** Receiving agent must acknowledge within 3 agent turns. No response → escalation to receiving room's Lead.
 9. **P-02.9 — Handoff verification.** Receiving agent must verify evidence before accepting. Verification steps: check file:line references exist, check exit codes, check screenshots exist. Skipped verification → Level 2.
+10. **P-02.10 — Adversarial second-check on high-severity findings.** Any finding graded CRITICAL or HIGH during a room lead's review (e.g. Article 03 V2 fresh-context check, a security or quality audit) must be confirmed or refuted by a second agent in the room — not the finding's original author — before the lead hands off to brd-ceo. Original author self-confirming → Level 2. Second agent's verdict recorded verbatim alongside the original finding (Article 02 G5).
 
 ### Violation consequence
 Level 2 for procedural failures. Level 3 for cross-room boundary violation.
@@ -206,6 +208,7 @@ Define secrets management, permissions, access control, and security boundaries.
 9. **P-08.9 — Least privilege.** Agents operate with minimum required permissions. Elevated access temporary and logged. Unauthorized elevation → Level 3.
 10. **P-08.10 — Dependency scan.** Every new dependency scanned for known vulnerabilities before use. Skipped scan → Level 2.
 11. **P-08.11 — MCP access control.** MCP/brain server binds to 127.0.0.1 only. Remote access requires SSH tunnel + brd-cso approval. Violation → Level 3.
+12. **P-08.12 — Self-audit rubric.** sec-lead grades SHAMEL's own `.claude/` + `shamel/` surfaces across five categories — **Secrets · Permissions · Hooks · MCP Servers · Agents** — each scored CRITICAL/HIGH/MEDIUM/LOW/INFO with `file:line` evidence (Article 02 G1). This is a rubric for sec-lead to build audit tooling against — no scanner implements it yet. Ungraded category at a security gate → Level 1.
 
 ### Violation consequence
 Level 2 for procedural. Level 3 for boundary violations. Level 4 for secrets, veto violations, or vulnerability concealment.
@@ -227,9 +230,15 @@ Establish minimum quality bar, review requirements, and quality gates. Enforced 
 7. **P-09.7 — Quality debt log.** Known quality issues logged to `brain/quality/debt.md`. Unlogged → Level 2 for qa-lead.
 8. **P-09.8 — Minimum bar for handoff.** No cross-room handoff accepts artifacts with quality score <7/10. Accepting low-quality handoff → Level 2 for receiving Lead.
 9. **P-09.9 — Quality sampling.** brd-cqo randomly samples 10% of artifacts per gate for independent quality audit. Sampled artifact failing audit → gate reverted.
+10. **P-09.10 — Checkpoint vs continuous evals.** qa-lead selects per project whether quality gates run **checkpoint-based** (batched at gate close, e.g. Gate-5) or **continuous** (per-commit, for high-change-velocity rooms). Metrics wired to Article 03 V3 (pass^k at Gates 5–6) and Protocol 03 Evidence:
+    ```
+    pass@k: at least ONE of k attempts succeeds  (useful when you just need it working once)
+    pass^k: ALL k attempts must succeed          (useful when consistency across repeated runs matters)
+    ```
+11. **P-09.11 — READY/NOT READY verdict.** Before any QA-gated task's room lead hands off to brd-ceo, qa-lead issues an explicit **READY** or **NOT READY** verdict as a Protocol-03-Evidence-compliant artifact (file:line + exit codes). No implicit pass. Project-specific checkpoint phases (build/typecheck/lint/test/security-scan/diff-review commands) live in each project's own `CLAUDE.md`, not here — this keeps PROTOCOLS.md project-agnostic.
 
 ### Violation consequence
-Level 1–2 for procedural. Level 3 for gate skipping.
+Level 1–2 for procedural. Level 3 for gate skipping. Missing READY/NOT READY verdict at handoff → Level 2.
 
 ---
 
