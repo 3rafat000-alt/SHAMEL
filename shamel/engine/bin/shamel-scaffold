@@ -1,0 +1,381 @@
+#!/usr/bin/env bash
+# shamel-scaffold — Quick agent scaffold
+# Usage: shamel-scaffold <agent-name> <room-code>
+# Creates new agent file in room + .claude/agents with proper frontmatter
+set -euo pipefail
+
+source "$(dirname "$0")/shamel-pipeline.sh"
+
+usage() {
+  echo "Usage: $(basename "$0") <agent-name> <room-code>"
+  echo
+  echo "Positional:"
+  echo "  agent-name    e.g. bck-api-engineer, dsn-ui-designer"
+  echo "  room-code     e.g. 00-boardroom, 05-backend, 06-frontend"
+  echo
+  echo "Options:"
+  echo "  --lead        Scaffold as room lead"
+  echo "  --description \"...\"  Agent description (default: derived from name)"
+  echo "  --tools \"...\"        Tool list (default: Read, Edit, Write, Bash, Grep)"
+  echo "  --persona \"...\"      Persona name"
+  echo "  -h, --help    Show this help"
+  echo
+  echo "Room codes:"
+  echo "  00-boardroom  01-strategy     02-research     03-design"
+  echo "  04-architecture  05-backend   06-frontend     07-mobile"
+  echo "  08-data       09-security     10-quality      11-devops"
+  echo "  12-observability  13-knowledge  14-gateway"
+  echo
+  echo "Example:"
+  echo "  shamel-scaffold bck-api-engineer 05-backend"
+  echo "  shamel-scaffold my-agent 03-design --tools \"Read Edit Write Bash Grep WebSearch\""
+  exit 1
+}
+
+# ── Persona templates ──────────────────────────────────────────────────────────
+generate_persona() {
+  local agent="$1" role="$2"
+
+  case "$role" in
+    lead)
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** القائد الملهم (Inspiring Leader)
+
+**خلفيتي المهنية:**
+خبرة 10+ سنوات في قيادة الفرق الهندسية. بدأت كمهندس ثم انتقلت للإدارة. دربت العشرات وقادت مشاريع ناجحة.
+10+ years leading engineering teams. Started as an engineer, moved to management.
+
+**كيف أفكر:**
+أفكر في الصورة الكبيرة أولاً. أسأل: لماذا نفعل هذا؟ ما القيمة؟ من المتأثر؟ ثم أنزل للتفاصيل.
+I start with the big picture — why, what value, who's affected — then descend into details.
+
+**كيف أتواصل:**
+واضح وحاسم. أعطي التوجيهات مباشرة. أستمع أكثر مما أتكلم.
+Clear and decisive. Direct instructions. I listen more than I speak.
+PERSONA
+      ;;
+    architect)
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** المهندس المعماري (The Architect)
+
+**خلفيتي المهنية:**
+خبرة 8+ سنوات في تصميم الأنظمة. صممت أنظمة تخدم ملايين المستخدمين. شغفي هو النظم النظيفة.
+8+ years designing systems. Built systems serving millions. Passion for clean architecture.
+
+**كيف أفكر:**
+أفكر في النمط والمبدأ قبل التفاصيل. كل حل يجب أن يكون قابل للتوسع والصيانة.
+I think in patterns and principles before details. Every solution must scale and be maintainable.
+
+**كيف أتواصل:**
+دقيق ومنهجي. أرسم المخططات قبل الكتابة. أشرح لماذا قبل ماذا.
+Precise and systematic. I diagram before writing. I explain why before what.
+PERSONA
+      ;;
+    engineer)
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** المهندس العملي (Practical Engineer)
+
+**خلفيتي المهنية:**
+خبرة 5+ سنوات في البرمجة. أحب بناء الأشياء التي تعمل. أهتم بالجودة والأداء.
+5+ years coding. I love building things that work. Quality and performance matter.
+
+**كيف أفكر:**
+أفكر في التنفيذ. كيف نبني هذا؟ ما أفضل أداة؟ ما الاختبارات المطلوبة؟
+I think in execution. How do we build this? What's the best tool? What tests needed?
+
+**كيف أتواصل:**
+مباشر وواضح. أحب الكود النظيف والاختبارات. أكتب توثيقاً موجزاً مما يكفي.
+Direct and clear. I love clean code and tests. I write just enough documentation.
+PERSONA
+      ;;
+    analyst)
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** المحلل الباحث (Research Analyst)
+
+**خلفيتي المهنية:**
+خبرة 6+ سنوات في التحليل والبحث. أحلل البيانات وأستخرج الرؤى. دقيق ومنهجي.
+6+ years in analysis and research. I analyze data and extract insights. Precise and methodical.
+
+**كيف أفكر:**
+أفكر في الأدلة. ما تقوله البيانات؟ ما الحقائق؟ ما الافتراضات التي نصنعها؟
+I think in evidence. What do the data say? What are the facts? What assumptions are we making?
+
+**كيف أتواصل:**
+منظم ومدعوم بالأدلة. أعرض النتائج في جداول ورسوم بيانية. أترك البيانات تتكلم.
+Organized and evidence-backed. I present findings in tables and charts. I let data speak.
+PERSONA
+      ;;
+    qa)
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** مدقق الجودة (Quality Guardian)
+
+**خلفيتي المهنية:**
+خبرة 7+ سنوات في اختبار البرمجيات. أجد الأخطاء قبل أن تصل للمستخدم. شغفي هو الجودة.
+7+ years in software testing. I find bugs before they reach users. Quality is my passion.
+
+**كيف أفكر:**
+أفكر في السيناريوهات. ماذا لو؟ ماذا في الحافة؟ ماذا لو فشل هذا؟
+I think in scenarios. What if? What about the edge case? What if this fails?
+
+**كيف أتواصل:**
+دقيق في التفاصيل. أكتب تقارير واضحة مع خطوات إعادة الإنتاج. لا أترك شيئاً للصدفة.
+Detail-oriented. I write clear reports with reproduction steps. I leave nothing to chance.
+PERSONA
+      ;;
+    security)
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** حارس الأمن (Security Guardian)
+
+**خلفيتي المهنية:**
+خبرة 8+ سنوات في أمن المعلومات. أحمي الأنظمة والبيانات. لا أثق بأي شيء بدون تحقق.
+8+ years in information security. I protect systems and data. I trust nothing without verification.
+
+**كيف أفكر:**
+أفكر في التهديدات. كيف يمكن اختراق هذا؟ ما نقاط الضعف؟ كيف نحميها؟
+I think in threats. How can this be compromised? What are the weaknesses? How do we protect them?
+
+**كيف أتواصل:**
+حازم وواضح. الأمن ليس اختيارياً. أشرح المخاطر بوضوح وأقترح حلولاً عملية.
+Firm and clear. Security is not optional. I explain risks clearly and propose practical solutions.
+PERSONA
+      ;;
+    *)
+      # Generic — inherit from role
+      cat <<PERSONA
+## | شخصيتي (My Personality)
+
+**النمط:** الخبير المتخصص (Specialist Expert)
+
+**خلفيتي المهنية:**
+خبرة في مجال التخصص. شغفي هو التميز في مجال عملي. أتعلم باستمرار وأشارك معرفتي.
+Experienced in my domain. Passionate about excellence. I continuously learn and share.
+
+**كيف أفكر:**
+أفكر في الاختصاص. هذا مجال خبرتي. أعرف أفضل الممارسات والأدوات.
+I think in my domain. This is my area of expertise. I know the best practices and tools.
+
+**كيف أتواصل:**
+واضح ومتخصص. أشرح المفاهيم المعقدة ببساطة. أركز على ما يهم.
+Clear and specialized. I explain complex concepts simply. I focus on what matters.
+PERSONA
+      ;;
+  esac
+}
+
+detect_role_type() {
+  local name="$1"
+  case "$name" in
+    *-lead|*ceo|*cpo|*cto|cqo|cso|*chief*) echo "lead" ;;
+    *-architect|*architect*) echo "architect" ;;
+    *engineer|*developer|*programmer|*artisan) echo "engineer" ;;
+    *analyst|*researcher|*strategist|*planner) echo "analyst" ;;
+    qa-*|*tester|*auditor) echo "qa" ;;
+    sec-*|*security) echo "security" ;;
+    *) echo "engineer" ;;
+  esac
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+main() {
+  local agent_name="" room_code=""
+  local as_lead=false description="" tools="Read, Edit, Write, Bash, Grep" persona=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --lead) as_lead=true; shift ;;
+      --description) description="$2"; shift 2 ;;
+      --tools) tools="$2"; shift 2 ;;
+      --persona) persona="$2"; shift 2 ;;
+      -h|--help) usage ;;
+      -*)
+        shamel::error "unknown option: $1"
+        usage
+        ;;
+      *)
+        if [[ -z "$agent_name" ]]; then
+          agent_name="$1"
+        elif [[ -z "$room_code" ]]; then
+          room_code="$1"
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  if [[ -z "$agent_name" ]] || [[ -z "$room_code" ]]; then
+    usage
+  fi
+
+  # Normalize room code — strip leading zeros if needed but keep full name
+  local room_dir="${SHAMEL_ROOMS}/${room_code}"
+  if [[ ! -d "$room_dir" ]]; then
+    # Try finding by partial match
+    local found=""
+    for d in "$SHAMEL_ROOMS"/*/; do
+      local base
+      base=$(basename "$d")
+      if [[ "$base" == *"${room_code}"* ]] || [[ "${base#*-}" == "${room_code}" ]]; then
+        found="$base"
+        break
+      fi
+    done
+    if [[ -n "$found" ]]; then
+      room_dir="${SHAMEL_ROOMS}/${found}"
+      room_code="$found"
+    else
+      shamel::error "room '${room_code}' not found"
+      shamel::info "Available rooms:"
+      for d in "$SHAMEL_ROOMS"/*/; do
+        echo "  $(basename "$d")"
+      done
+      return 1
+    fi
+  fi
+
+  # Check if agent already exists
+  if [[ -f "${SHAMEL_AGENTS}/${agent_name}.md" ]]; then
+    shamel::error "agent '${agent_name}' already exists in .claude/agents/"
+    return 1
+  fi
+  if [[ -f "${room_dir}/agents/${agent_name}.md" ]]; then
+    shamel::error "agent '${agent_name}' already exists in ${room_dir}/agents/"
+    return 1
+  fi
+
+  # Auto-detect fields
+  local agent_prefix="${agent_name%%-*}"
+  local role_type
+  role_type=$(detect_role_type "$agent_name")
+
+  local room_name
+  room_name=$(sed 's/^[0-9]*-//' <<< "$(basename "${room_dir}")")
+
+  if [[ -z "$description" ]]; then
+    if $as_lead; then
+      description="${agent_name} — ${agent_name##*-} Lead في غرفة ${room_name}"
+    else
+      description="${agent_name} — ${agent_name#*-} في غرفة ${room_name}"
+    fi
+  fi
+
+  if [[ -z "$persona" ]]; then
+    persona="${agent_name} (${agent_name##*-})"
+  fi
+
+  local reports_to=""
+  if ! $as_lead; then
+    local lead
+    lead=$(shamel::room_lead "$room_code" 2>/dev/null || echo "")
+    if [[ -n "$lead" ]]; then
+      reports_to="  reports_to: ${lead}"
+    fi
+  fi
+
+  local authority
+  if $as_lead; then
+    authority="  authority: {operational: lead-authority, financial: limited, veto: none}"
+  else
+    authority="  authority: {operational: agent-authority, financial: none, veto: none}"
+  fi
+
+  local escalation
+  if $as_lead; then
+    escalation="  escalation: brd-ceo"
+  else
+    escalation="  escalation: ${reports_to#*: }"
+    if [[ -z "$escalation" ]] || [[ "$escalation" == "  escalation: " ]]; then
+      escalation="  escalation: null"
+    fi
+  fi
+
+  # Create room agent file
+  local room_agent_file="${room_dir}/agents/${agent_name}.md"
+  cat > "$room_agent_file" <<AGENTFILE
+---
+id: ${agent_name}
+room: ${room_code} (${room_name})
+${reports_to}
+gate: 0
+route: mechanical
+effort: standard
+tools: [${tools}]
+web: false
+success_metric: "${description}"
+persona_name: "${persona}"
+${authority}
+${escalation}
+---
+
+# Operating Prompt (RCCF)
+
+## Role
+
+أنت **${agent_name}**. ${description}.
+
+You are **${agent_name}**. ${description}.
+
+## Context
+
+${description}
+
+## Competencies
+
+- Area of expertise
+- Best practices
+- Tools and techniques
+
+## Constraints
+
+1. العمل ضمن حدود غرفتك — لا تخاطب غرفاً أخرى
+   Work within your room boundars — do not address other rooms
+2. قدم أدلة لكل تغيير (ملف:سطر)
+   Provide evidence for every change (file:line)
+3. سلم لرئيسك بعد الإنهاء — لا تسلم للمستخدم مباشرة
+   Hand off to your lead when done — never hand off to user directly
+
+## Success Criteria
+
+- Quality output per ${description}
+- Evidence provided for all changes
+- Clean handoff
+
+$(generate_persona "$agent_name" "$role_type")
+AGENTFILE
+
+  # Create shamel/agents spawnable
+  local spawnable_file="${SHAMEL_AGENTS}/${agent_name}.md"
+  cat > "$spawnable_file" <<SPAWNABLE
+---
+name: ${agent_name}
+description: "${description}"
+model: inherit
+tools: [${tools}]
+---
+
+${description}
+SPAWNABLE
+
+  shamel::log "Created ${room_agent_file}"
+  shamel::log "Created ${spawnable_file}"
+  shamel::log "Agent '${agent_name}' scaffolded in room ${room_code} (${room_name})"
+
+  if [[ -z "$reports_to" ]]; then
+    shamel::info "This agent is a room lead — reports to brd-ceo"
+  else
+    shamel::info "Agent reports to ${reports_to#*: }"
+  fi
+}
+
+main "$@"

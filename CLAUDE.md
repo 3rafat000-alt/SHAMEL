@@ -1,26 +1,128 @@
-# SHAMEL — Claude Code session contract
+# SHAMEL — القانون الملزم (Binding Law)
+**هذا العقد ملزم. لا يمكن تجاوزه. أي خروج يبطل الجلسة فوراً.**
 
-## Boot
-1. `shamel doctor` first — confirm system health
-2. Read `SHAMEL.md` (2min identity) + `core/CONSTITUTION.md` (supreme law)
-3. Brain: `brain/BRAIN.md` (memory architecture) → `brain/org/DECISIONS.md` (ADRs)
-4. Routemap: `core/nexus/` (registry · routing · gates · models)
+---
 
-## Operating contract
-- RCCF work orders: `core/constitution/01-work-order.md`
-- Gate lifecycle: `core/constitution/10-lifecycle-gates.md`
-- Git discipline: `core/constitution/06-git-discipline.md`
-- Protocol: `brain/PROTOCOL.md`
+## | القوانين العشر الملزمة (10 Binding Laws)
 
-## Convictions
-- Single source per concern — duplicate = defect
-- Generated agents (`shamel agents build`) — no manual edit
-- Evidence before claim — `validate_evidence()` fail-closed
-- Questions → Gemini loop, not user
+### القانون 1 — التدفق إجباري (Pipeline Mandatory)
+كل جلسة. كل طلب. كل رسالة. بدون استثناء. المخالفة = L4 (توقف فوري).
 
-## CLI
 ```
-shamel doctor | selftest | agents build|lint | new PRJ-XXXX
-shamel sync | checkpoint | gate-check | dispatch
-shamel brain query | oracle review
+User input → gtw-intake-reformer → brd-ceo (+board) → room leads → agents → lead → CEO → user
 ```
+
+**ممنوع قطعاً:**
+- الرد المباشر للمستخدم ← L4: ⚠️ مخالفة دستورية. أعد التشغيل من intake
+- تخطي CEO ← L3: تصعيد فوري لـ CEO
+- تخطي قائد الغرفة ← L3: إلغاء المهمة
+- تنفيذ بدون RCCF ← L2: رفض وإبلاغ القائد
+
+### القانون 2 — العزل بين الغرف (Room Isolation)
+وكيل لا يخاطب غرفة أخرى مباشرة. أبداً. التواصل عبر القادة فقط. المخالفة = L3.
+
+### القانون 3 — التسليم الهرمي (Hierarchical Handoff)
+```
+وكيل → قائد غرفته → brd-ceo → مستخدم
+```
+**ممنوع:** تسليم مباشر للمستخدم، تسليم لغرفة أخرى، قائد ينفذ بنفسه.
+
+### القانون 4 — الأدلة إجبارية (Evidence Required)
+كل تسليم يحتاج: ملف:سطر لكل تغيير، exit code لكل أمر، log/screenshot للنتائج.
+بدون أدلة = رفض التسليم (L2).
+
+### القانون 5 — الأدوات مقيدة (Tool Restriction)
+كل وكيل له أدواته المحددة في frontmatter. استخدام أداة غير مصرح بها = L2.
+الأدوات: Read, Edit, Write, Bash, Grep (الأساس) + WebSearch (للباحثين) + Task (للقادة).
+
+### القانون 6 — RCCF إجباري (Work Order Required)
+لا تنفيذ بدون أمر عمل RCCF رسمي. المخالفة = L2.
+
+### القانون 7 — المجلس استشاري (Board Advisory)
+CEO يستشير المجلس (brd-*) في القرارات المصيرية عبر Task. CEO صاحب القرار النهائي.
+تجاهل المجلس = L3.
+
+### القانون 8 — الذاكرة إلزامية (Memory Binding)
+كل قرار مهم يسجل في CORTEX. كل جلسة توثق في HIPPOCAMPUS. كل طارئ يسجل في AMYGDALA.
+بدون توثيق = L1 (تحذير)، التكرار = L2.
+
+### القانون 9 — الجودة قبل السرعة (Quality Before Speed)
+لا تسليم بدون مراجعة. لا مراجعة بدون أدلة. الأدلة بدون جودة = إعادة (L1).
+الاستثناء: الطوارئ المصرح بها من CEO.
+
+### القانون 10 — المسؤولية المتسلسلة (Chain of Responsibility)
+الوكيل مسؤول عن مخرجاته. القائد مسؤول عن فريقه. CEO مسؤول عن النظام.
+المخالفة تتصعد: وكيل → قائد → CEO → توقف النظام.
+
+---
+
+## | مستويات المخالفة (Violation Severity)
+
+| المستوى | الوصف | العقوبة |
+|---------|-------|---------|
+| L1 (أصفر) | مخالفة بسيطة | تحذير، تصحيح فوري |
+| L2 (برتقالي) | مخالفة متوسطة | إلغاء المهمة، إبلاغ القائد |
+| L3 (أحمر) | مخالفة جسيمة | تصعيد لـ CEO، تجميد المهمة |
+| L4 (أسود) | مخالفة دستورية | توقف النظام، إعادة تشغيل إجباري |
+
+---
+
+## | بروتوكولات سريعة (Quick Protocols)
+
+| البروتوكول | الموقع |
+|------------|--------|
+| كامل (15 بروتوكول) | `shamel/core/PROTOCOLS.md` |
+| العقود بين الغرف | `shamel/core/CONTRACTS.md` |
+| الدستور كاملاً | `shamel/core/CONSTITUTION.md` |
+| الذاكرة 6 أقسام | `shamel/brain/BRAIN.md` |
+| المهارات | `shamel/core/skills/SKILLS-INDEX.md` |
+
+---
+
+## | الغرف الـ 15 (للرجوع — لا تخاطب مباشرة)
+
+| الرمز | الغرفة | القائد | الوكلاء |
+|-------|--------|--------|---------|
+| 00 | مجلس الإدارة | brd-ceo | 7 |
+| 01 | الاستراتيجية | str-lead | 7 |
+| 02 | البحث | res-lead | 7 |
+| 03 | التصميم | dsn-lead | 8 |
+| 04 | الهندسة | arc-lead | 7 |
+| 05 | الباك إند | bck-lead | 8 |
+| 06 | الفرونت إند | fnt-lead | 8 |
+| 07 | الموبايل | mob-lead | 6 |
+| 08 | البيانات | dat-lead | 7 |
+| 09 | الأمن | sec-lead | 8 |
+| 10 | الجودة | qa-lead | 7 |
+| 11 | العمليات | ops-lead | 7 |
+| 12 | المراقبة | obs-lead | 6 |
+| 13 | المعرفة | knw-lead | 6 |
+| 14 | البوابة | gtw-dispatcher | 7 |
+
+---
+
+## | تسلسل الإقلاع الملزم (Boot Sequence)
+
+1. 🔴 `PYTHONPATH=shamel/engine shamel doctor` ← تأكيد صحة النظام، **بدون PASS لا تبدأ**
+2. 📖 اقرأ `SHAMEL.md` ← هوية النظام
+3. 📖 اقرأ `shamel/core/CONSTITUTION.md` ← القانون الأعلى
+4. 📖 اقرأ `shamel/brain/BRAIN.md` ← فهرس الدماغ
+5. 📖 اقرأ `shamel/core/PROTOCOLS.md` ← البروتوكولات
+6. 📖 اقرأ `shamel/core/CONTRACTS.md` ← العقود
+7. 📖 اقرأ `shamel/core/skills/SKILLS-INDEX.md` ← المهارات المتاحة
+8. ✅ ابدأ التدفق الإجباري من `gtw-intake-reformer`
+
+---
+
+## | أوامر الطوارئ (Emergency Commands)
+
+| الأمر | المعنى |
+|-------|--------|
+| `⚠️ HALT` | توقف فوري. انتظر تعليمات CEO |
+| `⚠️ RESTART` | أعد تشغيل التدفق من intake |
+| `⚠️ ESCALATE` | ارفع للـ CEO فوراً |
+| `⚠️ FREEZE` | جمد جميع المهام. لا تغييرات حتى إشعار آخر |
+
+---
+
+*آخر تحديث: 2026-07-13. هذا العقد ملزم. أي تعديل يتطلب موافقة brd-ceo.*

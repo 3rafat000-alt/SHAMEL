@@ -1,0 +1,202 @@
+#!/usr/bin/env bash
+# shamel-pipeline — SHAMEL pipeline runner
+# Usage: shamel-pipeline [step]
+# Steps: intake, ceo, delegate, execute, all
+set -euo pipefail
+
+source "$(dirname "$0")/shamel-pipeline.sh"
+
+usage() {
+  echo "Usage: $(basename "$0") [step]"
+  echo
+  echo "Steps:"
+  echo "  intake     Read latest user input, format for gtw-intake-reformer"
+  echo "  ceo        Prepare context for brd-ceo"
+  echo "  delegate   Identify which room leads to dispatch"
+  echo "  execute    Run agent tasks"
+  echo "  all        Run the entire pipeline"
+  echo
+  echo "Environment:"
+  echo "  SHAMEL_HOME  Override project root"
+  exit 1
+}
+
+# ── Step: intake ───────────────────────────────────────────────────────────────
+pipeline::intake() {
+  shamel::header "Pipeline Step: intake"
+  shamel::info "Target: gtw-intake-reformer"
+
+  if ! shamel::agent_exists "gtw-intake-reformer"; then
+    shamel::error "gtw-intake-reformer agent not found"
+    return 1
+  fi
+
+  # Find latest user input — check MEMORY.md, then active project context
+  local input_source=""
+  if [[ -f "${SHAMEL_HOME}/MEMORY.md" ]]; then
+    shamel::log "MEMORY.md found"
+    input_source="MEMORY.md"
+  fi
+
+  # Check for project context files
+  local projects=()
+  if [[ -d "${SHAMEL_HOME}/projects" ]]; then
+    for p in "${SHAMEL_HOME}"/projects/*/; do
+      [[ -d "$p" ]] && projects+=("$(basename "$p")")
+    done
+  fi
+
+  if [[ ${#projects[@]} -gt 0 ]]; then
+    shamel::log "${#projects[@]} project(s) available: ${projects[*]}"
+    # Read the most recently modified project context
+    local latest=""
+    local latest_ts=0
+    for p in "${projects[@]}"; do
+      local ctx="${SHAMEL_HOME}/projects/${p}/_context/CONTEXT.md"
+      if [[ -f "$ctx" ]]; then
+        local ts
+        ts=$(stat -c %Y "$ctx" 2>/dev/null || echo 0)
+        if [[ "$ts" -gt "$latest_ts" ]]; then
+          latest_ts=$ts; latest="$p"
+        fi
+      fi
+    done
+    if [[ -n "$latest" ]]; then
+      shamel::log "Latest project context: $latest"
+      input_source="$input_source + projects/$latest/_context/"
+    fi
+  fi
+
+  # Format intake for gtw-intake-reformer
+  cat <<INTAKE
+━━ Intake Packet ── $(date '+%Y-%m-%d %H:%M:%S') ━━
+Source: ${input_source:-"(no input found — awaiting user)"}
+Instructions: Read MEMORY.md, brain/BRAIN.md, search if needed,
+reformulate input for brd-ceo per SHAMEL constitution.
+
+Pipeline step: intake → ceo → delegate → execute
+INTAKE
+
+  shamel::log "Intake packet generated"
+}
+
+# ── Step: ceo ──────────────────────────────────────────────────────────────────
+pipeline::ceo() {
+  shamel::header "Pipeline Step: ceo"
+  shamel::info "Target: brd-ceo"
+
+  if ! shamel::agent_exists "brd-ceo"; then
+    shamel::error "brd-ceo agent not found"
+    return 1
+  fi
+
+  local ceo_room
+  ceo_room=$(shamel::agent_room "brd-ceo")
+  local ceo_tools
+  ceo_tools=$(shamel::agent_tools "brd-ceo")
+
+  cat <<CEOCTX
+━━ CEO Context ── $(date '+%Y-%m-%d %H:%M:%S') ━━
+Agent: brd-ceo
+Room: ${ceo_room}
+Tools: ${ceo_tools}
+
+Board members available:
+$(shamel::room_agents "00-boardroom" 2>/dev/null | grep -v '^brd-ceo$' | sed 's/^/  - /')
+
+Protocol:
+1. Analyze input
+2. Consult board via Task (brd-cpo, brd-cto, brd-cqo, brd-cso, brd-arbiter)
+3. Consult relevant room leads via Task
+4. Decide — which room, what gate, what order
+5. Delegate via Task with RCCF
+CEOCTX
+
+  shamel::log "CEO context prepared"
+}
+
+# ── Step: delegate ─────────────────────────────────────────────────────────────
+pipeline::delegate() {
+  shamel::header "Pipeline Step: delegate"
+  shamel::info "Identifying room leads for dispatch"
+
+  local leads_found=0
+  for room in $(shamel::all_rooms); do
+    local lead
+    lead=$(shamel::room_lead "$room" 2>/dev/null || true)
+    if [[ -n "$lead" ]]; then
+      # Check if lead agent file exists
+      if shamel::agent_exists "$lead"; then
+        local room_name
+        room_name=$(sed 's/^[0-9]*-//' <<< "$room")
+        shamel::log "  ${room} → ${lead} (${room_name})"
+        leads_found=$((leads_found + 1))
+      else
+        shamel::warn "  ${room} → ${lead} (agent file missing)"
+      fi
+    else
+      shamel::warn "  ${room} → (no lead defined)"
+    fi
+  done
+
+  shamel::log "${leads_found} room lead(s) available for dispatch"
+  shamel::info "CEO delegates via Task tool to room leads with RCCF"
+}
+
+# ── Step: execute ──────────────────────────────────────────────────────────────
+pipeline::execute() {
+  shamel::header "Pipeline Step: execute"
+  shamel::info "Running agent tasks (simulated — actual execution via Task tool)"
+
+  local count=0
+  for agent in $(shamel::all_agents); do
+    count=$((count + 1))
+  done
+  shamel::log "${count} agents available for execution"
+
+  shamel::info "Agents run with tools: Read Edit Write Bash Grep"
+  shamel::info "Handoff: agent → room lead → CEO → user"
+}
+
+# ── Step: all ──────────────────────────────────────────────────────────────────
+pipeline::all() {
+  shamel::header "SHAMEL Pipeline — Full Run"
+  shamel::info "Starting: $(date '+%Y-%m-%d %H:%M:%S')"
+
+  local exit_code=0
+  for step in intake ceo delegate execute; do
+    if ! "pipeline::${step}"; then
+      shamel::error "Pipeline failed at step: ${step}"
+      exit_code=1
+      break
+    fi
+    shamel::info "Step '${step}' complete"
+  done
+
+  if [[ $exit_code -eq 0 ]]; then
+    shamel::log "Pipeline complete: $(date '+%Y-%m-%d %H:%M:%S')"
+    shamel::log "Remember: handoff chain is agent → room lead → CEO → user"
+  fi
+
+  return $exit_code
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+main() {
+  local step="${1:-all}"
+
+  case "$step" in
+    intake|ceo|delegate|execute|all)
+      "pipeline::${step}"
+      ;;
+    -h|--help)
+      usage
+      ;;
+    *)
+      shamel::error "unknown step: $step"
+      usage
+      ;;
+  esac
+}
+
+main "$@"

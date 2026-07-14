@@ -1,9 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "username": "shamel",
-  "instructions": ["CLAUDE.md", "brain/BRAIN.md", "engine/ORCHESTRATOR.md"],
+  "instructions": ["CLAUDE.md", "shamel/brain/BRAIN.md", "MEMORY.md"],
   "skills": {
-    "paths": [".claude/skills", "core/skills"]
+    "paths": ["shamel/skills", "shamel/core/skills"]
   },
   "permission": {
     "edit": "allow",
@@ -17,17 +17,22 @@
       "sudo *": "deny",
       "chmod 777 *": "deny"
     },
+    "task": "allow",
     "external_directory": {
-      "/home/es3dlll/Desktop/Lorka": "read-only",
+      "/home/es3dlll/Desktop/Lorka": "allow",
       "*": "allow"
     }
   },
   "agent": {
     "build": {
-      "model": "anthropic/claude-sonnet-4-6"
+      "model": "opencode-zen/deepseek-v4-flash-free"
     },
     "plan": {
-      "model": "anthropic/claude-sonnet-4-6"
+      "model": "opencode-zen/deepseek-v4-flash-free"
+    },
+    "intake": {
+      "model": "opencode-zen/deepseek-v4-flash-free",
+      "description": "gtw-intake-reformer — rewrites user input into optimal CEO prompt"
     }
   }
 }

@@ -1,0 +1,13 @@
+# SHAMEL Model Aliases
+# The ONLY file that maps alias → model-id.
+# routing.yaml references aliases only — agentlint fails on any raw model ID there.
+
+aliases:
+  mechanical: opencode-zen/deepseek-v4-flash-free   # 80% of routine ops
+  workhorse:  opencode-zen/deepseek-v4-flash-free   # clear-cut coding
+  gatekeeper: inherit                               # session frontier model — adversarial checks
+  deep:       opencode-zen/deepseek-v4-flash-free   # last resort only
+
+policy:
+  routing_yaml_may_reference: [mechanical, workhorse, gatekeeper, deep]
+  note: "agentlint fails if routing.yaml contains any ID not in this list"

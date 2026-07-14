@@ -13,16 +13,16 @@
 
 | # | الوثيقة | ماذا تجيب |
 |---|---------|-----------|
-| 1 | [`00-analysis/09-GAP-ANALYSIS.md`](00-analysis/09-GAP-ANALYSIS.md) | **لماذا نظام جديد؟** — 20 فجوة (2 CRITICAL · 7 HIGH · 7 MEDIUM · 4 LOW) |
-| 2 | [`00-analysis/08-COMPARISON-MATRIX.md`](00-analysis/08-COMPARISON-MATRIX.md) | **من يفوز بماذا؟** — 6 أجيال × 10 أبعاد + 21 مكوّناً ذهبياً يُرحَّل |
-| 3 | [`01-prd/PRD.md`](01-prd/PRD.md) | **ماذا نبني؟** — 46 FR + 10 NFR، كلٌّ مُسند لفجوة أو مكوّن فائز، بمعايير قبول ميكانيكية |
-| 4 | [`02-architecture/ARCHITECTURE.md`](02-architecture/ARCHITECTURE.md) | **كيف يُبنى؟** — الطبقات، شجرة المجلدات، 5 قرارات ADR (منها مصير كل جيل قديم) |
-| 5 | [`02-architecture/BRAIN.md`](02-architecture/BRAIN.md) | **العقل والدماغ** — توحيد 8 أنظمة ذاكرة متوازية في 3 طبقات بمالك لكل ملف |
-| 6 | [`02-architecture/PROTOCOL.md`](02-architecture/PROTOCOL.md) | **البروتوكول الشامل** — العقد التشغيلي الواحد: RCCF، 9 بوابات، تأريض/تحقق، اقتصاد، git |
-| 7 | [`02-architecture/AUTOMATION.md`](02-architecture/AUTOMATION.md) | **المؤتمت** — الصادق: ما يعمل بلا بشر فعلاً، داخل Claude Code وخارجه |
-| 8 | [`04-projects-method/PROJECT-STRUCTURE.md`](04-projects-method/PROJECT-STRUCTURE.md) | **طريقة بناء المشاريع** — الهيكل القانوني، قانون VCS (كل مشروع git خاص)، مصنع يوم-صفر |
-| 9 | [`03-plan/MASTER-PLAN.md`](03-plan/MASTER-PLAN.md) | **الخطة الكبرى** — 12 مرحلة من الإنقاذ إلى التشغيل الكامل، قبول G-01..G-12 |
-| 10 | [`03-plan/MIGRATION.md`](03-plan/MIGRATION.md) | **الترحيل** — قرار لكل طبقة قائمة: يُرحّل / يُدمج / يُعاد / يُتقاعد + rollback |
+| 1 | [`archive/00-analysis/09-GAP-ANALYSIS.md`](archive/00-analysis/09-GAP-ANALYSIS.md) | **لماذا نظام جديد؟** — 20 فجوة (2 CRITICAL · 7 HIGH · 7 MEDIUM · 4 LOW) |
+| 2 | [`archive/00-analysis/08-COMPARISON-MATRIX.md`](archive/00-analysis/08-COMPARISON-MATRIX.md) | **من يفوز بماذا؟** — 6 أجيال × 10 أبعاد + 21 مكوّناً ذهبياً يُرحَّل |
+| 3 | [`archive/01-prd/PRD.md`](archive/01-prd/PRD.md) | **ماذا نبني؟** — 46 FR + 10 NFR، كلٌّ مُسند لفجوة أو مكوّن فائز، بمعايير قبول ميكانيكية |
+| 4 | [`archive/02-architecture/ARCHITECTURE.md`](archive/02-architecture/ARCHITECTURE.md) | **كيف يُبنى؟** — الطبقات، شجرة المجلدات، 5 قرارات ADR (منها مصير كل جيل قديم) |
+| 5 | [`archive/02-architecture/BRAIN.md`](archive/02-architecture/BRAIN.md) | **العقل والدماغ** — توحيد 8 أنظمة ذاكرة متوازية في 3 طبقات بمالك لكل ملف |
+| 6 | [`archive/02-architecture/PROTOCOL.md`](archive/02-architecture/PROTOCOL.md) | **البروتوكول الشامل** — العقد التشغيلي الواحد: RCCF، 9 بوابات، تأريض/تحقق، اقتصاد، git |
+| 7 | [`archive/02-architecture/AUTOMATION.md`](archive/02-architecture/AUTOMATION.md) | **المؤتمت** — الصادق: ما يعمل بلا بشر فعلاً، داخل Claude Code وخارجه |
+| 8 | [`archive/04-projects-method/PROJECT-STRUCTURE.md`](archive/04-projects-method/PROJECT-STRUCTURE.md) | **طريقة بناء المشاريع** — الهيكل القانوني، قانون VCS (كل مشروع git خاص)، مصنع يوم-صفر |
+| 9 | [`archive/03-plan/MASTER-PLAN.md`](archive/03-plan/MASTER-PLAN.md) | **الخطة الكبرى** — 12 مرحلة من الإنقاذ إلى التشغيل الكامل، قبول G-01..G-12 |
+| 10 | [`archive/03-plan/MIGRATION.md`](archive/03-plan/MIGRATION.md) | **الترحيل** — قرار لكل طبقة قائمة: يُرحّل / يُدمج / يُعاد / يُتقاعد + rollback |
 
 ---
 
@@ -31,21 +31,23 @@
 ```
 SHAMEL/
 ├── README.md                     ← أنت هنا
-├── 00-analysis/                  ← الفحص والمقارنة (الأدلة)
-│   ├── 01-claude-system.md          تدقيق .claude (الجيلان: v6 الكامل + stubs القديمة)
-│   ├── 02-opencode-system.md        تدقيق .opencode (LEGACY — وفيه كنوز: 114 سكربت tools)
-│   ├── 03-company-core.md           تدقيق company/ v6 (HEALTHY — 15 غرفة، 105 وكيل، 9 بوابات)
-│   ├── 04-engines-tooling.md        خريطة المحرّكات (5 أجيال، 8 نقاط دخول، 6 طوابير مهام!)
-│   ├── 05-agents-inventory.md       مقارنة جرود الوكلاء الأربعة (105↔105↔105 + 100 persona)
-│   ├── 06-projects-structure.md     نظام المشاريع (CRITICAL: كود فينتك خارج أي git)
-│   ├── 07-memory-brain-protocols.md 8 أنظمة ذاكرة + حل لغز git المنزوع
-│   ├── 08-COMPARISON-MATRIX.md      ★ المصفوفة الكبرى: 6 أجيال × 10 أبعاد
-│   └── 09-GAP-ANALYSIS.md           ★ 20 فجوة مرتّبة بالخطورة — قائد الـ PRD
-├── 01-prd/PRD.md                 ← وثيقة متطلبات المنتج (9 أقسام، 46 FR، 10 NFR)
-├── 02-architecture/              ← التصميم (4 وثائق)
-├── 03-plan/                      ← الخطة الكبرى (12 مرحلة) + الترحيل
-├── 04-projects-method/           ← مصنع المشاريع
-└── 05-review/                    ← سجل التحقق العدائي (7 مراجعات + فحص الاتساق)
+├── archive/                      ← أرشيف أجيال SOFI السابقة
+│   ├── 00-analysis/                  الفحص والمقارنة (الأدلة)
+│   ├── 01-prd/PRD.md                 وثيقة متطلبات المنتج
+│   ├── 02-architecture/              التصميم (4 وثائق)
+│   ├── 03-plan/                      الخطة الكبرى + الترحيل
+│   ├── 04-projects-method/           مصنع المشاريع
+│   └── 05-review/                    سجل التحقق العدائي
+├── shamel/                       ← SHAMEL النظام الموحد
+│   ├── core/                     ← الدستور، البروتوكولات، العقود، البوابات
+│   ├── engine/                   ← CLI، أدوات، ماسحات، اختبارات
+│   ├── brain/                    ← الذاكرة (6 مناطق + قواعد بيانات)
+│   ├── agents/                   ← 106 وكيل بشخصيات بشرية
+│   └── skills/                   ← مهارات متخصصة (Stripe, CCPayment...)
+├── projects/PRJ-SAKK/           ← المشروع النشط
+├── CLAUDE.md                     ← عقد الجلسة
+├── MEMORY.md                     ← خريطة التوجيه
+└── opencode.json                 ← إعدادات OpenCode
 ```
 
 ---
@@ -66,6 +68,6 @@ SHAMEL/
 
 ## سجل الجودة
 
-- كل وثائق التصميم الست خضعت لمراجع عدائي مستقل → كلها احتاجت إصلاحات CRITICAL → **أُصلحت كلها** (السجل في `05-review/`).
+- كل وثائق التصميم الست خضعت لمراجع عدائي مستقل → كلها احتاجت إصلاحات CRITICAL → **أُصلحت كلها** (السجل في `archive/05-review/`).
 - الخطة الكبرى: **PASS** من أول مراجعة (تغطية كاملة لكل GAP بخطورة CRITICAL/HIGH).
-- فحص الاتساق النهائي عبر الوثائق العشر: 25 تناقضاً (2 CRITICAL أُصلحا مباشرة، والبقية موثّقة في `05-review/10-CONSISTENCY.md`).
+- فحص الاتساق النهائي عبر الوثائق العشر: 25 تناقضاً (2 CRITICAL أُصلحا مباشرة، والبقية موثّقة في `archive/05-review/10-CONSISTENCY.md`).
